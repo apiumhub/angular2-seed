@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { HeroDetailComponent } from './hero-detail.component';
+import {Hero} from './hero';
+
 @Component({
     selector: 'my-app',
     styles: [`
@@ -52,28 +55,20 @@ import { Component } from '@angular/core';
     `],
     template: `
       <h1>{{title}}</h1>
-      <div  *ngIf="selectedHero">
-      <h2>{{selectedHero.name}} details!</h2>
-      <div><label>id: </label>{{hero.id}}</div>
-      <div  *ngIf="selectedHero">
-        <label>name: </label>
-        <input  [(ngModel)]="selectedHero.name"  placeholder="name">
-      </div>
-      </div>
-          <h2>My Heroes</h2>
-    <ul class="heroes">
-        <li *ngFor="let hero of heroes" (click)="onSelect(hero)">
-        <span class="badge">{{hero.id}}</span> {{hero.name}}
-      </li>
-    </ul>
-      `
+      <h2>My Heroes</h2>
+      <my-hero-detail [hero]="selectedHero"></my-hero-detail>
+      <ul class="heroes">
+        <li *ngFor="let hero of heroes"
+          [class.selected]="hero === selectedHero"
+          (click)="onSelect(hero)">
+          <span class="badge">{{hero.id}}</span> {{hero.name}}
+        </li>
+      </ul>
+    `,
+    directives: [HeroDetailComponent]
 })
 export class AppComponent {
     title = 'Tour of Heroes';
-    hero:Hero = {
-        id: 1,
-        name: 'Windstorm'
-    };
     public heroes = HEROES;
     selectedHero:Hero;
 
@@ -82,10 +77,6 @@ export class AppComponent {
     }
 }
 
-export class Hero {
-    id:number;
-    name:string;
-}
 
 const HEROES:Hero[] = [
     {id: 11, name: 'Mr. Nice'},
