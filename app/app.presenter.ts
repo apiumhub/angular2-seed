@@ -5,9 +5,8 @@ export interface IHeroList
 export class AppPresenter
 {
     constructor(hl: IHeroList, heroService: HeroService) {
-        hl.loadEvent.subscribe((e) => console.log("event",e));
-        hl.loadEvent.subscribe(() => heroService
-                    .getHeroes()
-                    .subscribe(heroes => hl.showHeroes(heroes)))
+        //hl.loadEvent.subscribe((e) => console.log("event",e));
+        hl.loadEvent.subscribe(() => heroService.getHeroes())
+        heroService.heroesRefreshed.subscribe(heroes => hl.showHeroes(heroes))
     }
 }

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import {Observable} from 'rxjs/Rx';
+import {Observable, Subject} from 'rxjs/Rx';
 
 import { Hero } from './hero';
+import {Observer} from "rxjs/Observer";
 export const HEROES: Hero[] = [
   {id: 11, name: 'Mr. Nice'},
   {id: 12, name: 'Narco'},
@@ -16,7 +17,12 @@ export const HEROES: Hero[] = [
 ];
 @Injectable()
 export class HeroService {
+    heroesRefreshed: Subject
+
+    constructor(){
+        this.heroesRefreshed=new Subject();
+    }
     getHeroes() {
-        return Observable.fromPromise(Promise.resolve(HEROES));
+        return Promise.resolve(HEROES).then((heroes) => this.heroesRefreshed.next(heroes));
     }
 }
