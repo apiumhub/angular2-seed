@@ -3,6 +3,7 @@ import { HeroDetailComponent } from './hero-detail.component';
 import { HeroService } from './hero.service';
 import { OnInit } from '@angular/core';
 import {Hero} from './hero';
+import {Observable, Subject} from 'rxjs/Rx';
 
 @Component({
     selector: 'my-app',
@@ -70,21 +71,46 @@ import {Hero} from './hero';
     directives: [HeroDetailComponent],
     providers: [HeroService]
 })
-export class AppComponent implements OnInit{
+
+
+
+export class AppComponent implements OnInit, IHeroList {
 
 
     title = 'Tour of Heroes';
     public heroes: Hero[];
     selectedHero:Hero;
 
-    ngOnInit() {
-        this.heroService.getHeroes().subscribe(heroes => this.heroes = heroes);
-     }
+    loadEvent: Observable;
 
-    constructor(private heroService: HeroService) {}
+    ngOnInit() {}
 
+    constructor(private heroService: HeroService) {
+        this.loadEvent= new Subject();
+        new AppPresenter(this, heroService);
+        this.loadEvent.next();
+    }
+
+    showHeroes(heroes: Hero[])
+    {
+        this.heroes = heroes;
+    }
 
     onSelect(hero:Hero) {
         this.selectedHero = hero;
+    }
+}
+
+interface IHeroList
+{
+    showHeroes(heroes: Hero[]);
+}
+export class AppPresenter
+{
+    constructor(hl: IHeroList, heroService: HeroService) {
+        hl.loadEvent.subscribe((e) => console.log("event",e));
+        hl.loadEvent.subscribe(() => heroService
+                    .getHeroes()
+                    .subscribe(heroes => hl.showHeroes(heroes)))
     }
 }
