@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import {Observable} from 'rxjs/Rx';
 
 import { Hero } from './hero';
 export const HEROES: Hero[] = [
@@ -16,6 +17,6 @@ export const HEROES: Hero[] = [
 @Injectable()
 export class HeroService {
     getHeroes() {
-        return Promise.resolve(HEROES);
+        return Observable.fromPromise(Promise.resolve(HEROES));
     }
 }
