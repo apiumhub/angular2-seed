@@ -16,6 +16,6 @@ export const HEROES: Hero[] = [
 @Injectable()
 export class HeroService {
     getHeroes() {
-        return HEROES;
+        return Promise.resolve(HEROES);
     }
 }
