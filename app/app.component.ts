@@ -4,6 +4,7 @@ import { HeroService } from './hero.service';
 import { OnInit } from '@angular/core';
 import {Hero} from './hero';
 import {Observable, Subject} from 'rxjs/Rx';
+import {IHeroList, AppPresenter} from './app.presenter'
 
 @Component({
     selector: 'my-app',
@@ -101,16 +102,4 @@ export class AppComponent implements OnInit, IHeroList {
     }
 }
 
-interface IHeroList
-{
-    showHeroes(heroes: Hero[]);
-}
-export class AppPresenter
-{
-    constructor(hl: IHeroList, heroService: HeroService) {
-        hl.loadEvent.subscribe((e) => console.log("event",e));
-        hl.loadEvent.subscribe(() => heroService
-                    .getHeroes()
-                    .subscribe(heroes => hl.showHeroes(heroes)))
-    }
-}
+
