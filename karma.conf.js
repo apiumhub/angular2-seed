@@ -7,6 +7,9 @@ module.exports = function (config) {
 
         files: [
             {pattern: 'tests/**/*.ts', included: true, watched: false},
+            {pattern: 'node_modules/systemjs/dist/system-polyfills.js', instrument: false},
+            {pattern: 'node_modules/systemjs/dist/system.js', instrument: false},
+            {pattern: 'node_modules/rxjs/bundles/Rx.js', included: true, watched: true},
             {pattern: 'app/**/hero.js', included: true, watched: false}
         ],
 
