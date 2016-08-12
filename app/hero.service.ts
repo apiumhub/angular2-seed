@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Observable, Subject} from 'rxjs/Rx';
+import {newEvent} from './utils/newEvent'
 
 import { Hero } from './hero';
 import {Observer} from "rxjs/Observer";
@@ -22,7 +23,7 @@ export class HeroService {
 
     constructor(){
         this.heroesRefreshed=new Subject<Hero[]>();
-        this.whenHeroesRefresh=this.heroesRefreshed.subscribe.bind(this.heroesRefreshed)
+        this.whenHeroesRefresh=newEvent(this.heroesRefreshed)
     }
     getHeroes() {
         return Promise.resolve(HEROES).then((heroes) => this.heroesRefreshed.next(heroes));

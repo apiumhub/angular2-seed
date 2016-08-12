@@ -5,6 +5,7 @@ import { OnInit } from '@angular/core';
 import {Hero} from './hero';
 import {Observable, Subject} from 'rxjs/Rx';
 import {IHeroList, AppPresenter} from './app.presenter'
+import {newEvent} from './utils/newEvent'
 
 @Component({
     selector: 'my-app',
@@ -73,8 +74,6 @@ import {IHeroList, AppPresenter} from './app.presenter'
     providers: [HeroService]
 })
 
-
-
 export class AppComponent implements OnInit, IHeroList {
 
 
@@ -83,13 +82,13 @@ export class AppComponent implements OnInit, IHeroList {
     selectedHero:Hero;
     whenLoad: Function
 
-    loadEvent: Subject<{}>;
+    public loadEvent: Subject<{}>;
 
     ngOnInit() {}
 
     constructor(private heroService: HeroService) {
         this.loadEvent= new Subject();
-        this.whenLoad = this.loadEvent.subscribe.bind(this.loadEvent)
+        this.whenLoad = newEvent(this.loadEvent);
         new AppPresenter(this, heroService);
         this.loadEvent.next({});
     }
