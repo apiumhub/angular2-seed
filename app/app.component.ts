@@ -82,14 +82,14 @@ export class AppComponent implements OnInit, IHeroList {
     public heroes: Hero[];
     selectedHero:Hero;
 
-    loadEvent: Observable;
+    loadEvent: Subject<{}>;
 
     ngOnInit() {}
 
     constructor(private heroService: HeroService) {
         this.loadEvent= new Subject();
         new AppPresenter(this, heroService);
-        this.loadEvent.next();
+        this.loadEvent.next({});
     }
 
     showHeroes(heroes: Hero[])
