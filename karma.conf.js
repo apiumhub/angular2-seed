@@ -9,14 +9,14 @@ module.exports = function (config) {
             {pattern: 'node_modules/systemjs/dist/system-polyfills.js', instrument: false},
             {pattern: 'node_modules/systemjs/dist/system.js', instrument: false},
             {pattern: 'node_modules/rxjs/bundles/Rx.js', included: true, watched: true},
-            {pattern: 'app/**/hero.ts', included: true, watched: false},
-            {pattern: 'tests/**/*.ts', included: true, watched: false}
+            {pattern: 'app/**/hero.js', included: true, watched: false},
+            {pattern: 'tests/**/*.js', included: true, watched: false},
         ],
 
         preprocessors: {
-            './**/*.ts': [
-                'typescript'
-            ],
+            //'./**/*.ts': [
+            //    'tsc'
+            //],
             '**/*.js': ['browserify']
         },
 
