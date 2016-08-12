@@ -18,13 +18,14 @@ export const HEROES: Hero[] = [
 @Injectable()
 export class HeroService {
     heroesRefreshed: Subject<Hero[]>
+    whenHeroesRefresh: Function
 
     constructor(){
         this.heroesRefreshed=new Subject<Hero[]>();
+        this.whenHeroesRefresh=this.heroesRefreshed.subscribe.bind(this.heroesRefreshed)
     }
     getHeroes() {
         return Promise.resolve(HEROES).then((heroes) => this.heroesRefreshed.next(heroes));
     }
 
-    whenHeroesRefresh=this.heroesRefreshed.subscribe
 }

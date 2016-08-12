@@ -81,6 +81,7 @@ export class AppComponent implements OnInit, IHeroList {
     title = 'Tour of Heroes';
     public heroes: Hero[];
     selectedHero:Hero;
+    whenLoad: Function
 
     loadEvent: Subject<{}>;
 
@@ -88,11 +89,12 @@ export class AppComponent implements OnInit, IHeroList {
 
     constructor(private heroService: HeroService) {
         this.loadEvent= new Subject();
+        this.whenLoad = this.loadEvent.subscribe.bind(this.loadEvent)
         new AppPresenter(this, heroService);
         this.loadEvent.next({});
     }
 
-    whenLoad = this.loadEvent.subscribe
+
 
     showHeroes(heroes: Hero[])
     {
