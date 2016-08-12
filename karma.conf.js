@@ -3,15 +3,16 @@ module.exports = function (config) {
 
         basePath: '.',
 
-        frameworks: ['jasmine', 'chai', 'sinon', 'browserify'],
+        frameworks: ['jasmine','browserify'],
 
         files: [
             {pattern: 'node_modules/systemjs/dist/system-polyfills.js', instrument: false},
             {pattern: 'node_modules/systemjs/dist/system.js', instrument: false},
             {pattern: 'node_modules/rxjs/bundles/Rx.js', included: true, watched: true},
-            {pattern: 'app/**/hero.js', included: true, watched: false},
-            {pattern: 'tests/**/*.js', included: true, watched: false},
+            {pattern: 'app/**/hero.js', included: true, watched: true},
+            {pattern: 'tests/**/*.js', included: true, watched: true},
         ],
+
 
         preprocessors: {
             //'./**/*.ts': [
@@ -40,7 +41,6 @@ module.exports = function (config) {
 
         browsers: ['PhantomJS'],
 
-        // Karma plugins loaded
         plugins: [
             'karma-mocha',
             'karma-chai',
@@ -67,6 +67,6 @@ module.exports = function (config) {
             debug: true
         },
 
-        singleRun: true
+        singleRun: false
     })
 };

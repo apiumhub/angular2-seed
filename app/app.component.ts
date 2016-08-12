@@ -92,6 +92,8 @@ export class AppComponent implements OnInit, IHeroList {
         this.loadEvent.next({});
     }
 
+    whenLoad = (fun) => this.loadEvent.subscribe(fun)
+
     showHeroes(heroes: Hero[])
     {
         this.heroes = heroes;
