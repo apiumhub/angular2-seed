@@ -92,7 +92,7 @@ export class AppComponent implements OnInit, IHeroList {
         this.loadEvent.next({});
     }
 
-    whenLoad = (fun) => this.loadEvent.subscribe(fun)
+    whenLoad = this.loadEvent.subscribe
 
     showHeroes(heroes: Hero[])
     {

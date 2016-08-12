@@ -2,7 +2,7 @@ import {Hero} from './hero';
 import {HeroService} from './hero.service';
 export interface IHeroList {
     showHeroes(heroes:Hero[]);
-    whenLoad(fun);
+    whenLoad;
 }
 export class AppPresenter {
     constructor(heroesListView:IHeroList, heroService:HeroService) {

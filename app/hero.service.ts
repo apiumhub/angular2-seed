@@ -26,5 +26,5 @@ export class HeroService {
         return Promise.resolve(HEROES).then((heroes) => this.heroesRefreshed.next(heroes));
     }
 
-    whenHeroesRefresh=(fun) => this.heroesRefreshed.subscribe(fun)
+    whenHeroesRefresh=this.heroesRefreshed.subscribe
 }
