@@ -6,7 +6,7 @@ describe("first test", () => {
         let hero:Hero = {id: 2, name: 'Super Cat'}; //structural type
         expect(hero.name).toEqual('Super Cat');
         let a = new Subject();
-        a.subscribe(()=>console.log("hola 4"));
+        a.subscribe(()=>console.log("hola 2"));
         a.next({})
     });
 });
