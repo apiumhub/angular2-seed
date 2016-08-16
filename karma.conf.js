@@ -3,7 +3,7 @@ module.exports = function (config) {
 
         basePath: '.',
 
-        frameworks: ['jasmine','browserify'],
+        frameworks: ['mocha','chai', 'browserify'],
 
         files: [
             {pattern: 'node_modules/systemjs/dist/system-polyfills.js', instrument: false},
