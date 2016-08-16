@@ -21,12 +21,21 @@ export class HeroService {
     heroesRefreshed: Subject<Hero[]>
     heroes: Function
 
+    onHeroSaved: Subject<Hero>;
+    private savedHero: Function;
+
     constructor(){
         this.heroesRefreshed=new Subject<Hero[]>();
         this.heroes=newEvent(this.heroesRefreshed)
+        this.onHeroSaved = new Subject<Hero>();
+        this.savedHero=newEvent(this.onHeroSaved)
     }
     getHeroes() {
         return Promise.resolve(HEROES).then((heroes) => this.heroesRefreshed.next(heroes));
     }
 
+    saveHero(hero:Hero):any {
+        console.log(hero);
+        this.onHeroSaved.next(hero)
+    }
 }
