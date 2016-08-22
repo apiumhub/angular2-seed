@@ -5,24 +5,26 @@ const sourcemaps = require('gulp-sourcemaps');
 const tscConfig = require('./tsconfig.json');
 var tsProject = ts.createProject("tsconfig.json");
 var browserify = require("browserify");
-var watchify = require("watchify");
 var source = require('vinyl-source-stream');
+var watchify = require("watchify");
 var tsify = require("tsify");
 var gutil = require("gulp-util");
+var uglify = require('gulp-uglify');
+var buffer = require('vinyl-buffer');
 
 // clean the contents of the distribution directory
 gulp.task('clean', function () {
     return del('dist/**/*');
 });
 // copy static assets - i.e. non TypeScript compiled source
-gulp.task('copy:assets', ['clean'], function() {
-  return gulp.src(['app/**/*', 'index.html', 'styles.css', '!app/**/*.ts'], { base : './' })
-    .pipe(gulp.dest('dist'))
+gulp.task('copy:assets', ['clean'], function () {
+    return gulp.src(['app/**/*', 'index.html', 'styles.css', '!app/**/*.ts'], {base: './'})
+        .pipe(gulp.dest('dist'))
 });
-gulp.task('tslint', function() {
-  return gulp.src('app/**/*.ts')
-    .pipe(tslint())
-    .pipe(tslint.report('verbose'));
+gulp.task('tslint', function () {
+    return gulp.src('app/**/*.ts')
+        .pipe(tslint())
+        .pipe(tslint.report('verbose'));
 });
 // copy dependencies
 gulp.task('copy:libs', ['clean'], function () {
@@ -36,28 +38,26 @@ gulp.task('copy:libs', ['clean'], function () {
         ])
         .pipe(gulp.dest('dist/lib'))
 });
+
 var watchedBrowserify = watchify(browserify({
-            basedir: '.',
-            debug: true,
-            entries: ['app/main.ts'],
-            cache: {},
-            packageCache: {}
-        })
-        .plugin(tsify)
-        .bundle());
+    basedir: '.',
+    debug: true,
+    entries: ['app/main.ts'],
+    cache: {},
+    packageCache: {}
+}).plugin(tsify));
+
 function bundle() {
-    return
-        watchedBrowserify
-        .pipe(source('bundle.js'))
-        .pipe(gulp.dest("dist"));
+    return function () {
+        return watchedBrowserify
+            .bundle()
+            .pipe(source('bundle.js'))
+            .pipe(gulp.dest("dist"));
+
+    }
 }
 // TypeScript compile
-gulp.task('compile', ['clean'], function () {
-    return bundle();
-    //return tsProject.src()
-    //        .pipe(ts(tsProject))
-    //        .js.pipe(gulp.dest("dist"));
-});
+gulp.task('compile', ['clean'], bundle());
 
 gulp.task('build', ['compile', 'copy:libs', 'copy:assets']);
 gulp.task('default', ['build']);

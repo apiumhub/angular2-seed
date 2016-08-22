@@ -4,6 +4,7 @@ import {Subject} from "rxjs/Subject";
 import {newEvent} from "./utils/newEvent";
 import {HeroService} from "./hero.service";
 import {HeroDetailPresenter} from "./herodetail.presenter";
+import {IChangedHero} from "./herodetail.presenter";
 @Component({
   selector: 'my-hero-detail',
   template: `
@@ -19,7 +20,7 @@ import {HeroDetailPresenter} from "./herodetail.presenter";
   `,
   providers: [HeroService]
 })
-export class HeroDetailComponent {
+export class HeroDetailComponent implements IChangedHero {
   @Input()
   hero: Hero;
 
