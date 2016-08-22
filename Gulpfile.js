@@ -5,8 +5,10 @@ const sourcemaps = require('gulp-sourcemaps');
 const tscConfig = require('./tsconfig.json');
 var tsProject = ts.createProject("tsconfig.json");
 var browserify = require("browserify");
+var watchify = require("watchify");
 var source = require('vinyl-source-stream');
 var tsify = require("tsify");
+var gutil = require("gulp-util");
 
 // clean the contents of the distribution directory
 gulp.task('clean', function () {
@@ -34,9 +36,7 @@ gulp.task('copy:libs', ['clean'], function () {
         ])
         .pipe(gulp.dest('dist/lib'))
 });
-// TypeScript compile
-gulp.task('compile', ['clean'], function () {
-    return browserify({
+var watchedBrowserify = watchify(browserify({
             basedir: '.',
             debug: true,
             entries: ['app/main.ts'],
@@ -44,9 +44,16 @@ gulp.task('compile', ['clean'], function () {
             packageCache: {}
         })
         .plugin(tsify)
-        .bundle()
+        .bundle());
+function bundle() {
+    return
+        watchedBrowserify
         .pipe(source('bundle.js'))
         .pipe(gulp.dest("dist"));
+}
+// TypeScript compile
+gulp.task('compile', ['clean'], function () {
+    return bundle();
     //return tsProject.src()
     //        .pipe(ts(tsProject))
     //        .js.pipe(gulp.dest("dist"));
@@ -54,3 +61,5 @@ gulp.task('compile', ['clean'], function () {
 
 gulp.task('build', ['compile', 'copy:libs', 'copy:assets']);
 gulp.task('default', ['build']);
+watchedBrowserify.on("update", bundle);
+watchedBrowserify.on("log", gutil.log);
