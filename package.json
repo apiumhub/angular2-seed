@@ -37,6 +37,9 @@
     "browserify": "^13.1.0",
     "chai": "^3.5.0",
     "concurrently": "^2.0.0",
+    "del": "^2.1.0",
+    "gulp": "^3.9.0",
+    "gulp-typescript": "^2.8.0",
     "http-server": "^0.9.0",
     "jasmine-core": "^2.4.1",
     "karma": "^1.1.2",
@@ -59,11 +62,10 @@
     "sinon-chai": "^2.8.0",
     "systemjs": "^0.19.27",
     "tsc": "^1.20150623.0",
+    "tsify": "^1.0.3",
     "typescript": "^1.8.10",
     "typings": "^1.0.4",
-    "watchify": "^3.7.0",
-    "gulp": "^3.9.0",
-    "gulp-typescript": "^2.8.0",
-    "del": "^2.1.0"
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.7.0"
   }
 }
