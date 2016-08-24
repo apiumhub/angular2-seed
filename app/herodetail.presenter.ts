@@ -1,9 +1,10 @@
 import {HeroService} from "./hero.service";
 import {HeroDetailComponent} from "./hero-detail.component";
 import {Hero} from "./hero";
+import {Observable} from "rxjs/Observable";
 export interface IChangedHero
 {
-    changedHero(Function):void;
+    changedHero: Function;
 }
 export class HeroDetailPresenter
 {
