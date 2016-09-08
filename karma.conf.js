@@ -9,7 +9,9 @@ module.exports = function (config) {
             {pattern: 'node_modules/systemjs/dist/system-polyfills.js', instrument: false},
             {pattern: 'node_modules/systemjs/dist/system.js', instrument: false},
             {pattern: 'node_modules/rxjs/bundles/Rx.js', included: true, watched: true},
+            {pattern: 'node_modules/reflect-metadata/**/*.js', included: true, watched: true},
             {pattern: 'app/**/hero.js', included: true, watched: true},
+            {pattern: 'app/**/hero.service.js', included: true, watched: true},
             {pattern: 'tests/**/*.js', included: true, watched: true},
         ],
 
@@ -39,7 +41,7 @@ module.exports = function (config) {
 
         autoWatch: true,
 
-        browsers: ['PhantomJS'],
+        browsers: ['Chrome'],
 
         plugins: [
             'karma-mocha',
