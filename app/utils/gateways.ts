@@ -27,20 +27,25 @@ export class AxiosGateway implements Server {
 
     }
 
-    get<T>(resource:string):Observable<T> {
+    private request<T>(resource:string, method:string, headers: any={'X-Custom-Header': 'foobar'}) {
         const subject = new BehaviorSubject<string>('/');
         subject.next(resource);
         return subject
+            .do((resource) => console.log("calling resource [",resource, "] of server: [", this.serverHost, "]"))
             .flatMap(resource => Observable.fromPromise(axios.request({
                 baseURL: this.serverHost,
                 timeout: 1000,
-                method: 'get',
-                headers: {'X-Custom-Header': 'foobar'},
+                method: method,
+                headers: headers,
                 url: resource
             }))).retry(3)
             .do((resp) => {
                 console.log("returned from call for resource: ", resource, JSON.stringify(resp));
             })
             .map((resp) => resp.data);
+    }
+
+    get<T>(resource:string):Observable<T> {
+        return this.request<T>(resource, 'get');
     }
 }
