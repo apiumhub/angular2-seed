@@ -35,7 +35,7 @@ export class HeroService {
     onHeroSaved:Subject<Hero>;
     private savedHero:Function;
 
-    constructor() {
+    constructor(private server=Server.local()) {
         this.heroesRefreshed = new Subject<Hero[]>();
         this.heroes = newEvent(this.heroesRefreshed)
         this.onHeroSaved = new Subject<Hero>();
@@ -52,8 +52,7 @@ export class HeroService {
     }
 
     loadHeroes():Subscription {
-        const server = Server.local();
-        return server.get<Hero[]>('/heroes').subscribe(
+        return this.server.get<Hero[]>('/heroes').subscribe(
             (heroes:Hero[]) => {
                 return this.heroesRefreshed.next(heroes)
             },
@@ -61,4 +60,5 @@ export class HeroService {
             () => console.log('Completed'));
     }
 }
+
 //array map extension

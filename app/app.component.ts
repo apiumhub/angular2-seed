@@ -89,7 +89,7 @@ export class AppComponent implements OnInit, IHeroList {
     constructor(private heroService: HeroService) {
         this.loadEvent= new Subject();
         this.whenLoad = newEvent(this.loadEvent);
-        new AppPresenter(this, heroService);
+        new AppPresenter(this, heroService); //TODO (christian): extract presenter instantiation
         this.loadEvent.next({});
     }
 
