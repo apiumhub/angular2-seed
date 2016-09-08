@@ -11,7 +11,7 @@ import {AjaxObservable} from "rxjs/observable/dom/AjaxObservable";
 import axios from 'axios';
 import {Subscription} from "rxjs/Subscription";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {Gateway, AxiosGateway} from './utils/gateways'
+import {Server, AxiosGateway} from './utils/gateways'
 
 
 
@@ -52,7 +52,7 @@ export class HeroService {
     }
 
     loadHeroes():Subscription {
-        const server = new AxiosGateway();
+        const server = Server.local();
         return server.get<Hero[]>('/heroes').subscribe(
             (heroes:Hero[]) => {
                 return this.heroesRefreshed.next(heroes)

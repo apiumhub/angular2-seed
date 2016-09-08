@@ -12,10 +12,16 @@ import axios from 'axios';
 import {Subscription} from "rxjs/Subscription";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
-export interface Gateway {
+export abstract class Server {
     get<T>(resource:string):Observable<T>;
+    static local(): Server {
+        return new AxiosGateway();
+    }
 };
-export class AxiosGateway implements Gateway {
+export class AxiosGateway implements Server {
+    constructor(private serverHost='http://localhost:3004/') {
+
+    }
     get<T>(resource:string):Observable<T> {
         const subject = new BehaviorSubject<string>('/');
         subject.next(resource);
