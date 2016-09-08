@@ -12,22 +12,27 @@ import axios from 'axios';
 import {Subscription} from "rxjs/Subscription";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
-export abstract class Server {
+//region: using type merging:
+export interface Server {
     get<T>(resource:string):Observable<T>;
+}
+export abstract class Server {
     static local(): Server {
-        return new AxiosGateway();
+        return new AxiosGateway('http://localhost:3004/');
     }
 };
+//endregion
 export class AxiosGateway implements Server {
     constructor(private serverHost='http://localhost:3004/') {
 
     }
+
     get<T>(resource:string):Observable<T> {
         const subject = new BehaviorSubject<string>('/');
         subject.next(resource);
         return subject
             .flatMap(resource => Observable.fromPromise(axios.request({
-                baseURL: 'http://localhost:3004/',
+                baseURL: this.serverHost,
                 timeout: 1000,
                 method: 'get',
                 headers: {'X-Custom-Header': 'foobar'},
