@@ -52,8 +52,8 @@ export class HeroService {
     }
 
     loadHeroes():Subscription {
-        const server = new AxiosGateway<Hero[]>();
-        return server.get('/heroes').subscribe(
+        const server = new AxiosGateway();
+        return server.get<Hero[]>('/heroes').subscribe(
             (heroes:Hero[]) => {
                 return this.heroesRefreshed.next(heroes)
             },

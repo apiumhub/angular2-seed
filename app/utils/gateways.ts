@@ -12,11 +12,11 @@ import axios from 'axios';
 import {Subscription} from "rxjs/Subscription";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
-export interface Gateway<T> {
-    get(resource:string):Observable<T>;
+export interface Gateway {
+    get<T>(resource:string):Observable<T>;
 };
-export class AxiosGateway<T> implements Gateway<T> {
-    get(resource:string):Observable<T> {
+export class AxiosGateway implements Gateway {
+    get<T>(resource:string):Observable<T> {
         const subject = new BehaviorSubject<string>('/');
         subject.next(resource);
         return subject
