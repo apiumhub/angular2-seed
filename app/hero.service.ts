@@ -12,10 +12,10 @@ import axios from 'axios';
 import {Subscription} from "rxjs/Subscription";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
-interface Server<T> {
+interface Gateway<T> {
     get(resource:string):Observable<T>;
 }
-class AxiosServer<T> implements Server<T> {
+class AxiosGateway<T> implements Gateway<T> {
     get(resource:string):Observable<T> {
         const subject = new BehaviorSubject<string>('/');
         subject.next(resource);
@@ -71,22 +71,8 @@ export class HeroService {
     }
 
     loadHeroes():Subscription {
-        const requestUrl = '/heroes';
-        const subject = new BehaviorSubject<string>('/');
-        subject.next(requestUrl);
-        const responseStream = subject
-            .flatMap(requestUrl => Observable.fromPromise(axios.request({
-                baseURL: 'http://localhost:3004/',
-                timeout: 1000,
-                method: 'get',
-                headers: {'X-Custom-Header': 'foobar'},
-                url: requestUrl
-            }))).retry(3)
-            .do((resp) => {
-                console.log("returned from call to ", requestUrl, JSON.stringify(resp));
-            })
-            .map((resp) => resp.data);
-        return responseStream.subscribe(
+        const server = new AxiosGateway<Hero[]>();
+        return server.get('/heroes').subscribe(
             (heroes:Hero[]) => {
                 return this.heroesRefreshed.next(heroes)
             },
