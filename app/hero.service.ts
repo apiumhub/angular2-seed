@@ -1,35 +1,43 @@
 import { Injectable } from '@angular/core';
 import {Observable, Subject} from 'rxjs/Rx';
+import 'rxjs/add/observable/dom/ajax';
+import 'rxjs/add/observable/fromPromise';
+import 'rxjs/add/observable/defer';
+import 'rxjs/add/operator/retry';
 import {newEvent} from './utils/newEvent'
-
 import { Hero } from './hero';
 import {Observer} from "rxjs/Observer";
-export const HEROES: Hero[] = [
-  {id: 11, name: 'Mr. Nice'},
-  {id: 12, name: 'Narco'},
-  {id: 13, name: 'Bombasto'},
-  {id: 14, name: 'Celeritas'},
-  {id: 15, name: 'Magneta'},
-  {id: 16, name: 'RubberMan'},
-  {id: 17, name: 'Dynama'},
-  {id: 18, name: 'Dr IQ'},
-  {id: 19, name: 'Magma'},
-  {id: 20, name: 'Tornado'}
+import {AjaxObservable} from "rxjs/observable/dom/AjaxObservable";
+import axios from 'axios';
+import {Subscription} from "rxjs/Subscription";
+
+export const HEROES:Hero[] = [
+    {id: 11, name: 'Mr. Nice'},
+    {id: 12, name: 'Narco'},
+    {id: 13, name: 'Bombasto'},
+    {id: 14, name: 'Celeritas'},
+    {id: 15, name: 'Magneta'},
+    {id: 16, name: 'RubberMan'},
+    {id: 17, name: 'Dynama'},
+    {id: 18, name: 'Dr IQ'},
+    {id: 19, name: 'Magma'},
+    {id: 20, name: 'Tornado'}
 ];
 @Injectable()
 export class HeroService {
-    heroesRefreshed: Subject<Hero[]>
-    heroes: Function
+    heroesRefreshed:Subject<Hero[]>
+    heroes:Function
 
-    onHeroSaved: Subject<Hero>;
-    private savedHero: Function;
+    onHeroSaved:Subject<Hero>;
+    private savedHero:Function;
 
-    constructor(){
-        this.heroesRefreshed=new Subject<Hero[]>();
-        this.heroes=newEvent(this.heroesRefreshed)
+    constructor() {
+        this.heroesRefreshed = new Subject<Hero[]>();
+        this.heroes = newEvent(this.heroesRefreshed)
         this.onHeroSaved = new Subject<Hero>();
-        this.savedHero=newEvent(this.onHeroSaved)
+        this.savedHero = newEvent(this.onHeroSaved)
     }
+
     getHeroes() {
         return Promise.resolve(HEROES).then((heroes) => this.heroesRefreshed.next(heroes));
     }
@@ -39,7 +47,19 @@ export class HeroService {
         this.onHeroSaved.next(hero)
     }
 
-    loadHeroes():void {
-        return this.heroesRefreshed.next(HEROES);
+    loadHeroes():Subscription {
+        return Observable.defer(() => axios.create({
+                baseURL: 'http://localhost:3004/',
+                timeout: 4000,
+                headers: {'X-Custom-Header': 'foobar'}
+            }).get('/heroes'))
+            .retry(3)
+            .subscribe(
+                (resp:string) => this.heroesRefreshed.next(HEROES),
+                (error) => (
+                    console.log(JSON.stringify(error.message), error.code)
+                )
+            );
+
     }
 }

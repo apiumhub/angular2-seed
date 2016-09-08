@@ -9,7 +9,8 @@
     "tsc:w": "tsc -w",
     "typings": "typings",
     "test-karma": "karma start karma.conf.js",
-    "test": "mocha tests"
+    "test": "mocha tests",
+    "api-stub": "json-server --watch tests/resources/heroes.json --port 3004"
   },
   "license": "ISC",
   "dependencies": {
@@ -24,6 +25,7 @@
     "@angular/router-deprecated": "2.0.0-rc.2",
     "@angular/upgrade": "2.0.0-rc.4",
     "angular2-in-memory-web-api": "0.0.14",
+    "axios": "^0.14.0",
     "bootstrap": "^3.3.6",
     "core-js": "^2.4.0",
     "gulp-sourcemaps": "^1.6.0",
