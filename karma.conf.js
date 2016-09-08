@@ -18,7 +18,7 @@ module.exports = function (config) {
 
         preprocessors: {
             //'./**/*.ts': [
-            //    'tsc'
+            //    'typescript'
             //],
             '**/*.js': ['browserify']
         },

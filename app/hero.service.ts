@@ -12,9 +12,26 @@ import axios from 'axios';
 import {Subscription} from "rxjs/Subscription";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
-interface Server
-{
-    get(resource:string):any;
+interface Server<T> {
+    get(resource:string):Observable<T>;
+}
+class AxiosServer<T> implements Server<T> {
+    get(resource:string):Observable<T> {
+        const subject = new BehaviorSubject<string>('/');
+        subject.next(resource);
+        return subject
+            .flatMap(resource => Observable.fromPromise(axios.request({
+                baseURL: 'http://localhost:3004/',
+                timeout: 1000,
+                method: 'get',
+                headers: {'X-Custom-Header': 'foobar'},
+                url: resource
+            }))).retry(3)
+            .do((resp) => {
+                console.log("returned from call for resource: ", resource, JSON.stringify(resp));
+            })
+            .map((resp) => resp.data);
+    }
 }
 
 export const HEROES:Hero[] = [
@@ -54,25 +71,27 @@ export class HeroService {
     }
 
     loadHeroes():Subscription {
-        const requestUrl='/heroes';
-        const subject=new BehaviorSubject<string>('/');
-        const responseStream = subject
-                .flatMap(requestUrl => Observable.fromPromise(axios.request({
-                                baseURL: 'http://localhost:3004/',
-                                timeout: 1000,
-                                method: 'get',
-                                headers: {'X-Custom-Header': 'foobar'},
-                                url: requestUrl
-                            })));
+        const requestUrl = '/heroes';
+        const subject = new BehaviorSubject<string>('/');
         subject.next(requestUrl);
-        const stream=responseStream
-                .retry(3)
-                .do((resp) => {console.log("returned from call to ",requestUrl, JSON.stringify(resp));})
-                .map((resp) => resp.data );
-        return stream.subscribe(
-                  (heroes: Hero[]) => {return this.heroesRefreshed.next(heroes)},
-                  (err:Error) => console.log('Error: ' + err),
-                  () => console.log('Completed'));
+        const responseStream = subject
+            .flatMap(requestUrl => Observable.fromPromise(axios.request({
+                baseURL: 'http://localhost:3004/',
+                timeout: 1000,
+                method: 'get',
+                headers: {'X-Custom-Header': 'foobar'},
+                url: requestUrl
+            }))).retry(3)
+            .do((resp) => {
+                console.log("returned from call to ", requestUrl, JSON.stringify(resp));
+            })
+            .map((resp) => resp.data);
+        return responseStream.subscribe(
+            (heroes:Hero[]) => {
+                return this.heroesRefreshed.next(heroes)
+            },
+            (err:Error) => console.log('Error: ' + err),
+            () => console.log('Completed'));
     }
 }
 //array map extension
