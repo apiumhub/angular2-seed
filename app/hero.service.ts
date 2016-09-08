@@ -12,6 +12,11 @@ import axios from 'axios';
 import {Subscription} from "rxjs/Subscription";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
+interface Server
+{
+    get(resource:string):any;
+}
+
 export const HEROES:Hero[] = [
     {id: 11, name: 'Mr. Nice'},
     {id: 12, name: 'Narco'},
@@ -49,18 +54,22 @@ export class HeroService {
     }
 
     loadHeroes():Subscription {
-        var responseStream = new BehaviorSubject('/')
-                .flatMap(requestUrl => Observable.fromPromise(axios.create({
+        const requestUrl='/heroes';
+        const subject=new BehaviorSubject<string>('/');
+        const responseStream = subject
+                .flatMap(requestUrl => Observable.fromPromise(axios.request({
                                 baseURL: 'http://localhost:3004/',
                                 timeout: 1000,
-                                headers: {'X-Custom-Header': 'foobar'}
-                            }).get(requestUrl)));
-        responseStream.next('/heroes');
-        return responseStream
+                                method: 'get',
+                                headers: {'X-Custom-Header': 'foobar'},
+                                url: requestUrl
+                            })));
+        subject.next(requestUrl);
+        const stream=responseStream
                 .retry(3)
-                .do((resp) => {console.log(JSON.stringify(resp));})
-                .map((resp) => resp.data )
-                .subscribe(
+                .do((resp) => {console.log("returned from call to ",requestUrl, JSON.stringify(resp));})
+                .map((resp) => resp.data );
+        return stream.subscribe(
                   (heroes: Hero[]) => {return this.heroesRefreshed.next(heroes)},
                   (err:Error) => console.log('Error: ' + err),
                   () => console.log('Completed'));
