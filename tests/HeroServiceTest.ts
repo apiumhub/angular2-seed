@@ -18,6 +18,7 @@ describe("HeroService", () => {
 	describe("called", () => {
 		it("should get heroes from (fake) server", (done) => {
 			const sut=new HeroService();
+
 			sut.heroes((heroes:Hero[]) => {
 				expect(heroes).to.eql(testHeroes);
 				done();
