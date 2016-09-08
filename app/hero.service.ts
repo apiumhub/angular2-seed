@@ -38,4 +38,8 @@ export class HeroService {
         console.log(hero);
         this.onHeroSaved.next(hero)
     }
+
+    loadHeroes():void {
+        return this.heroesRefreshed.next(HEROES);
+    }
 }
