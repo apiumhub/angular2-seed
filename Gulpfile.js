@@ -64,9 +64,19 @@ gulp.task('bundle', function(cb) {
     var builder = new Builder('.', './systemjs.config.js');
     builder.buildStatic('app/main.js', 'dist/app.bundle.js').then(cb());
 });
-// TypeScript compile
-gulp.task('compile', ['clean'], bundle());
 
+var pump = require('pump');
+var uglify = require('gulp-uglify');
+gulp.task('compress', function (cb) {
+  pump([
+        gulp.src('dist/app.bundle.js'),
+        uglify({mangle: true,mangleProperties: false}),
+        gulp.dest('dist/min')
+    ],
+    cb
+  );
+});
+gulp.task('compile', ['clean'], bundle());
 gulp.task('build', ['compile', 'copy:libs', 'copy:assets']);
 gulp.task('default', ['build']);
 watchedBrowserify.on("update", bundle);
