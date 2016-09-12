@@ -12,7 +12,7 @@
     "test": "mocha tests",
     "api-stub": "json-server --watch tests/resources/heroes.json --port 3004",
     "clean": "rm -rf dist",
-    "build-prod": "tsc --module system && gulp bundle compress",
+    "build-prod": "npmrun clean && mkdir -p dist && tsc --module system && gulp bundle compress",
     "minify": "uglifyjs dist/bundle.js --screw-ie8 --compress --mangle --output dist/bundle.min.js"
   },
   "license": "ISC",

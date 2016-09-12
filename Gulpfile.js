@@ -18,8 +18,8 @@ gulp.task('clean', function () {
     return del('dist/**/*');
 });
 // copy static assets - i.e. non TypeScript compiled source
-gulp.task('copy:assets', ['clean'], function () {
-    return gulp.src(['app/**/*', 'index.html', 'styles.css', '!app/**/*.ts'], {base: './'})
+gulp.task('copy:assets',  function () {
+    return gulp.src(['index.prod.html', 'styles.css', '!app/**/*.ts'], {base: './'})
         .pipe(gulp.dest('dist'))
 });
 gulp.task('tslint', function () {
@@ -67,7 +67,7 @@ gulp.task('bundle', function(cb) {
 
 var pump = require('pump');
 var uglify = require('gulp-uglify');
-gulp.task('compress', function (cb) {
+gulp.task('compress', ['bundle'], function (cb) {
   pump([
         gulp.src('dist/app.bundle.js'),
         uglify({mangle: true,mangleProperties: false}),
@@ -77,7 +77,7 @@ gulp.task('compress', function (cb) {
   );
 });
 gulp.task('compile', ['clean'], bundle());
-gulp.task('build', ['compile', 'copy:libs', 'copy:assets']);
+gulp.task('build', ['copy:assets', 'bundle', 'compress']);
 gulp.task('default', ['build']);
 watchedBrowserify.on("update", bundle);
 watchedBrowserify.on("log", gutil.log);
