@@ -11,6 +11,7 @@ var tsify = require("tsify");
 var gutil = require("gulp-util");
 var uglify = require('gulp-uglify');
 var buffer = require('vinyl-buffer');
+var Builder = require('systemjs-builder');
 
 // clean the contents of the distribution directory
 gulp.task('clean', function () {
@@ -57,6 +58,12 @@ function bundle() {
 
     }
 }
+var Builder = require('systemjs-builder');
+
+gulp.task('bundle', function(cb) {
+    var builder = new Builder('.', './systemjs.config.js');
+    builder.buildStatic('app/main.js', 'dist/app.bundle.js').then(cb());
+});
 // TypeScript compile
 gulp.task('compile', ['clean'], bundle());
 
