@@ -32,10 +32,13 @@ export class HeroService {
     heroesRefreshed:Subject<Hero[]>
     heroes:Function
 
+    private server: Server;
+
     onHeroSaved:Subject<Hero>;
     private savedHero:Function;
 
-    constructor(private server=Server.local()) {
+    constructor() {
+        if (!this.server) this.server = Server.local();
         this.heroesRefreshed = new Subject<Hero[]>();
         this.heroes = newEvent(this.heroesRefreshed)
         this.onHeroSaved = new Subject<Hero>();
