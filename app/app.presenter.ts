@@ -9,7 +9,7 @@ export interface IHeroList {
 export class AppPresenter {
     constructor(heroesListView:IHeroList, heroService:HeroService) {
         //hl.loadEvent.subscribe((e) => console.log("event",e));
-        heroesListView.whenLoad(() => heroService.getHeroes());
+        heroesListView.whenLoad(() => heroService.loadHeroes());
         heroService.heroes((heroes:Hero[]) => heroesListView.showHeroes(heroes));
     }
 }

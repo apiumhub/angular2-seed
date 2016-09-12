@@ -42,7 +42,7 @@ export class AxiosGateway implements Server {
                 url: resource
             }))).retry(3)
             .do((resp) => {
-                console.log("returned from call for resource: ", resource, JSON.stringify(resp));
+                console.log("returned from call for resource: ", resource, JSON.stringify(resp.data));
             })
             .map((resp) => resp.data);
     }
