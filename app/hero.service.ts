@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { Inject } from '@angular/core';
+import { Optional } from '@angular/core';
 import {Observable, Subject} from 'rxjs/Rx';
 import 'rxjs/add/observable/dom/ajax';
 import 'rxjs/add/observable/fromPromise';
@@ -32,13 +34,12 @@ export class HeroService {
     heroesRefreshed:Subject<Hero[]>
     heroes:Function
 
-    private server: Server;
+    //private server: Server;
 
     onHeroSaved:Subject<Hero>;
     private savedHero:Function;
 
-    constructor() {
-        if (!this.server) this.server = Server.local();
+    constructor(@Optional() private server:Server=Server.local()) {
         this.heroesRefreshed = new Subject<Hero[]>();
         this.heroes = newEvent(this.heroesRefreshed)
         this.onHeroSaved = new Subject<Hero>();

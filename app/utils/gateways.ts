@@ -1,6 +1,7 @@
 /**
  * Created by christian on 8/09/16.
  */
+import { Injectable } from '@angular/core';
 import {Observable, Subject} from 'rxjs/Rx';
 import 'rxjs/add/observable/dom/ajax';
 import 'rxjs/add/observable/fromPromise';
@@ -22,6 +23,7 @@ export abstract class Server {
     }
 };
 //endregion
+@Injectable()
 export class AxiosGateway implements Server {
     constructor(private serverHost='http://localhost:3004/') {
 

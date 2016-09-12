@@ -12,6 +12,8 @@ To continuously compile, in unit tests, either:
 To continuously compile, in the app:
 * *npm start*
 
+See image idea_dev_setting.png to have an idea of a dev env set up.
+
 
  
 
