@@ -18,7 +18,7 @@ gulp.task('clean', function () {
     return del('dist/**/*');
 });
 // copy static assets - i.e. non TypeScript compiled source
-gulp.task('copy:assets',  function () {
+gulp.task('copy:assets', function () {
     return gulp.src(['index.prod.html', 'styles.css', '!app/**/*.ts'], {base: './'})
         .pipe(gulp.dest('dist'))
 });
@@ -28,15 +28,18 @@ gulp.task('tslint', function () {
         .pipe(tslint.report('verbose'));
 });
 // copy dependencies
-gulp.task('copy:libs', ['clean'], function () {
+gulp.task('copy:libs', function () {
     return gulp.src([
-            'node_modules/angular2/bundles/angular2-polyfills.js',
-            'node_modules/systemjs/dist/system.src.js',
-            'node_modules/rxjs/bundles/Rx.js',
-            'node_modules/axios/dist/axios.min.js',
-            'node_modules/angular2/bundles/angular2.dev.js',
-            'node_modules/angular2/bundles/router.dev.js',
-            'node_modules/es6-shim/es6-shim.min.js'
+            //'node_modules/angular2/bundles/angular2-polyfills.js',
+            //'node_modules/systemjs/dist/system.src.js',
+            //'node_modules/rxjs/bundles/Rx.js',
+            //'node_modules/axios/dist/axios.min.js',
+            //'node_modules/angular2/bundles/angular2.dev.js',
+            //'node_modules/angular2/bundles/router.dev.js',
+            //'node_modules/es6-shim/es6-shim.min.js'
+            "node_modules/core-js/client/shim.min.js",
+            "node_modules/zone.js/dist/zone.js",
+            "node_modules/reflect-metadata/Reflect.js"
         ])
         .pipe(gulp.dest('dist/lib'))
 });
@@ -60,7 +63,7 @@ function bundle() {
 }
 var Builder = require('systemjs-builder');
 
-gulp.task('bundle', function(cb) {
+gulp.task('bundle', function (cb) {
     var builder = new Builder('.', './systemjs.config.js');
     builder.buildStatic('app/main.js', 'dist/app.bundle.js').then(cb());
 });
@@ -68,16 +71,16 @@ gulp.task('bundle', function(cb) {
 var pump = require('pump');
 var uglify = require('gulp-uglify');
 gulp.task('compress', ['bundle'], function (cb) {
-  pump([
-        gulp.src('dist/app.bundle.js'),
-        uglify({mangle: true,mangleProperties: false}),
-        gulp.dest('dist/min')
-    ],
-    cb
-  );
+    pump([
+            gulp.src('dist/app.bundle.js'),
+            uglify({mangle: true, mangleProperties: false}),
+            gulp.dest('dist/min')
+        ],
+        cb
+    );
 });
 gulp.task('compile', ['clean'], bundle());
-gulp.task('build', ['copy:assets', 'bundle', 'compress']);
+gulp.task('build', ['copy:assets', 'bundle', 'compress', 'copy:libs']);
 gulp.task('default', ['build']);
 watchedBrowserify.on("update", bundle);
 watchedBrowserify.on("log", gutil.log);
