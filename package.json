@@ -13,7 +13,7 @@
 		"api-stub": "json-server --watch tests/resources/heroes.json --port 3004",
 		"clean": "rm -rf dist",
 		"build": "npm run clean && tsc --module system --moduleResolution node --experimentalDecorators --out dist/bundle.js",
-		"build_prod": "npm run build && mkdir -p ./dist && browserify -s main dist/main.js > dist/bundle.js && npm run minify",
+		"build_prod": "npm run build && mkdir -p ./dist && browserify -s main dist/bundle.js > dist/main.js && npm run minify",
 		"minify": "uglifyjs dist/bundle.js --screw-ie8 --compress --mangle --output dist/bundle.min.js"
 	},
 	"license": "ISC",

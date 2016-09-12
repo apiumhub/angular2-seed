@@ -77,12 +77,14 @@ import {newEvent} from './utils/newEvent'
 export class AppComponent implements OnInit, IHeroList {
 
 
-    title = 'Tour of Heroes';
-    public heroes: Hero[];
-    selectedHero:Hero;
-    whenLoad: Function
+    private title = 'Tour of Heroes';
+    private heroes: Hero[];
+    private selectedHero:Hero;
 
+    //region events
+    whenLoad: Function
     public loadEvent: Subject<{}>;
+    //endregion
 
     ngOnInit() {}
 
