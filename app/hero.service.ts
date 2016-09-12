@@ -61,7 +61,7 @@ export class HeroService {
             (heroes:Hero[]) => {
                 return this.heroesRefreshed.next(heroes)
             },
-            (err:Error) => console.log('Error: ' + err),
+            (err:Error) => console.error('Error: ' + err),
             () => console.log('Completed'));
     }
 }
