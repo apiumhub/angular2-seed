@@ -16,7 +16,7 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 //region: using type merging:
 export interface Server {
     get<T>(resource:string):Observable<T>;
-}
+};
 export abstract class Server {
     static local(): Server {
         return new AxiosGateway('http://localhost:3004/');

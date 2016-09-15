@@ -8,6 +8,37 @@ import {Observable, Subject} from 'rxjs/Rx';
 import {IHeroList, AppPresenter} from './app.presenter'
 import {newEvent} from './utils/newEvent'
 
+class AppComponent implements IHeroList {
+    private title = 'Tour of Heroes';
+    private heroes: Subject<Hero[]>;
+    private selectedHero:Hero;
+
+    //region events
+    whenLoad: Function
+    public loadEvent: Subject<{}>;
+    //endregion
+
+    ngOnDestroy() {
+
+    }
+
+    constructor() {
+        this.heroes=new Subject<Hero[]>();
+        this.loadEvent= new Subject();
+        this.whenLoad = newEvent(this.loadEvent);
+    }
+
+    showHeroes(heroes: Hero[])
+    {
+        this.heroes.next(heroes);
+    }
+
+    onSelect(hero:Hero) {
+        this.selectedHero = hero;
+    }
+}
+
+
 @Component({
     selector: 'my-app',
     styles: [`
@@ -75,39 +106,16 @@ import {newEvent} from './utils/newEvent'
     directives: [HeroDetailComponent],
     providers: [HeroService]
 })
-
-export class AppComponent implements OnInit, IHeroList {
-
-
-    private title = 'Tour of Heroes';
-    private heroes: Subject<Hero[]>;
-    private selectedHero:Hero;
-
-    //region events
-    whenLoad: Function
-    public loadEvent: Subject<{}>;
-    //endregion
-
-    ngOnInit() {}
-
-    constructor(private heroService: HeroService) {
-        this.heroes=new Subject<Hero[]>();
-        this.loadEvent= new Subject();
-        this.whenLoad = newEvent(this.loadEvent);
-        new AppPresenter(this, heroService); //TODO (christian): extract presenter instantiation
+export class InjectedAppComponent extends AppComponent implements OnInit
+{
+    ngOnInit():any {
         this.loadEvent.next({});
     }
-
-
-
-    showHeroes(heroes: Hero[])
-    {
-        this.heroes.next(heroes);
+    constructor(private heroService: HeroService) {
+        super();
+        new AppPresenter(this, heroService);
     }
 
-    onSelect(hero:Hero) {
-        this.selectedHero = hero;
-    }
 }
 
 

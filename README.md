@@ -3,8 +3,8 @@ To Run Karma tests with Intellij Idea:
 * line 63, change from *refresh: false* to *refresh: true*
 
 To continuously compile, in unit tests, either:
-* (suggested:) use npm plugin (tsc:w script), or
-* write *npm run tsc:w*, or
+* (suggested:) use npm plugin (tsc:w script) AND disable IDE compilation, or
+* write *npm run tsc:w* AND disable IDE compilation, or
 * set up a custom compiler in idea settings (ctrl+shift+s): /usr/lib/node\_modules/typescript/bin 
 ** tell to use config from tsconfig.json
 ** set up a typescript file watcher
