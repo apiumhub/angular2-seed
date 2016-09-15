@@ -5,6 +5,7 @@
     "node": "registry:dt/node#6.0.0+20160621231320"
   },
   "dependencies": {
-    "chai": "registry:npm/chai#3.5.0+20160723033700"
+    "chai": "registry:npm/chai#3.5.0+20160723033700",
+    "ramda": "registry:npm/ramda#0.21.0+20160531162943"
   }
 }
