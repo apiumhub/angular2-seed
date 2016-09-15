@@ -57,10 +57,7 @@ export class HeroService {
     }
 
     loadHeroes():Subscription {
-        return this.server.get<Hero[]>('/heroes').subscribe(
-            (heroes:Hero[]) => {
-                return this.heroesRefreshed.next(heroes)
-            },
+        return this.server.get<Hero[]>('/heroes').subscribe(this.heroesRefreshed,
             (err:Error) => console.error('Error: ' + err),
             () => console.log('Completed'));
     }
