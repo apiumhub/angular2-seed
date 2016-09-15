@@ -5,6 +5,7 @@ import {newEvent} from "./utils/newEvent";
 import {HeroService} from "./hero.service";
 import {HeroDetailPresenter} from "./herodetail.presenter";
 import {IChangedHero} from "./herodetail.presenter";
+import {ChangeDetectionStrategy} from '@angular/core';
 @Component({
   selector: 'my-hero-detail',
   template: `
@@ -18,6 +19,7 @@ import {IChangedHero} from "./herodetail.presenter";
       </div>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [HeroService]
 })
 export class HeroDetailComponent implements IChangedHero {

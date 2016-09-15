@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { HeroDetailComponent } from './hero-detail.component';
+import {ChangeDetectionStrategy} from '@angular/core';
 import { HeroService } from './hero.service';
 import { OnInit } from '@angular/core';
 import {Hero} from './hero';
@@ -70,6 +71,7 @@ import {newEvent} from './utils/newEvent'
         </li>
       </ul>
     `,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     directives: [HeroDetailComponent],
     providers: [HeroService]
 })
