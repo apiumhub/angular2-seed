@@ -63,7 +63,7 @@ import {newEvent} from './utils/newEvent'
       <h2>My Heroes</h2>
       <my-hero-detail [hero]="selectedHero"></my-hero-detail>
       <ul class="heroes">
-        <li *ngFor="let hero of heroes"
+        <li *ngFor="let hero of heroes | async"
           [class.selected]="hero === selectedHero"
           (click)="onSelect(hero)">
           <span class="badge">{{hero.id}}</span> {{hero.name}}
@@ -78,7 +78,7 @@ export class AppComponent implements OnInit, IHeroList {
 
 
     private title = 'Tour of Heroes';
-    private heroes: Hero[];
+    private heroes: Subject<Hero[]>;
     private selectedHero:Hero;
 
     //region events
@@ -89,6 +89,7 @@ export class AppComponent implements OnInit, IHeroList {
     ngOnInit() {}
 
     constructor(private heroService: HeroService) {
+        this.heroes=new Subject<Hero[]>();
         this.loadEvent= new Subject();
         this.whenLoad = newEvent(this.loadEvent);
         new AppPresenter(this, heroService); //TODO (christian): extract presenter instantiation
@@ -99,7 +100,7 @@ export class AppComponent implements OnInit, IHeroList {
 
     showHeroes(heroes: Hero[])
     {
-        this.heroes = heroes;
+        this.heroes.next(heroes);
     }
 
     onSelect(hero:Hero) {

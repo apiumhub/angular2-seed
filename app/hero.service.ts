@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { Inject } from '@angular/core';
 import { Optional } from '@angular/core';
 import {Observable, Subject} from 'rxjs/Rx';
-import 'rxjs/add/observable/dom/ajax';
-import 'rxjs/add/observable/fromPromise';
-import 'rxjs/add/observable/defer';
-import 'rxjs/add/operator/retry';
+import 'rxjs/observable/dom/ajax';
+import 'rxjs/observable/fromPromise';
+import 'rxjs/observable/defer';
+import 'rxjs/operator/retry';
+import 'rxjs/operator/merge';
 import {newEvent} from './utils/newEvent'
 import { Hero } from './hero';
 import {Observer} from "rxjs/Observer";
