@@ -39,5 +39,48 @@ describe("first test", () => {
         })
         ;
     })
+    describe("typescript", () => {
+    	describe("mixins", () => {
+    		it("should work", function(done)
+    		{
+    		    class Trait1
+                {
+                    hello():string {
+                        return "hello"
+                    }
+                }
+                class Trait2
+                {
+                    world():string {
+                        return "world"
+                    }
+                }
+                class Mixin implements Trait1, Trait2
+                {
+                    hello():string {
+                        return "";
+                    }
+
+                    world():string {
+                        return "";
+                    }
+
+                }
+                function applyMixins(derivedCtor: any, baseCtors: any[]) {
+                    baseCtors.forEach(baseCtor => {
+                        Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
+                            derivedCtor.prototype[name] = baseCtor.prototype[name];
+                        });
+                    });
+                }
+                applyMixins(Mixin, [Trait1, Trait2]);
+                const inst=new Mixin();
+                expect(inst.hello()+" "+inst.world()).to.eql("hello world");
+    		    done();
+    		});;
+    	})
+    	;
+    })
+
 
 });
