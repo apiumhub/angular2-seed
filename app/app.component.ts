@@ -8,7 +8,7 @@ import {Observable, Subject} from 'rxjs/Rx';
 import {IHeroList, AppPresenter} from './app.presenter'
 import {newEvent} from './utils/newEvent'
 
-class AppComponent implements IHeroList {
+class AppComponent implements IHeroList, OnInit {
     private title = 'Tour of Heroes';
     private heroes: Subject<Hero[]>;
     private selectedHero:Hero;
@@ -18,8 +18,8 @@ class AppComponent implements IHeroList {
     public loadEvent: Subject<{}>;
     //endregion
 
-    ngOnDestroy() {
-
+    ngOnInit():any {
+        this.loadEvent.next({});
     }
 
     constructor() {
@@ -106,11 +106,8 @@ class AppComponent implements IHeroList {
     directives: [HeroDetailComponent],
     providers: [HeroService]
 })
-export class InjectedAppComponent extends AppComponent implements OnInit
+export class InjectedAppComponent extends AppComponent
 {
-    ngOnInit():any {
-        this.loadEvent.next({});
-    }
     constructor(private heroService: HeroService) {
         super();
         new AppPresenter(this, heroService);
