@@ -1,6 +1,7 @@
 .idea
 node_modules
-*.map
+*.js.map
+*.js
 *.log
 dist/
 *.iml
