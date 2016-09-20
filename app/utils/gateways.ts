@@ -16,24 +16,27 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 //region: using type merging:
 export interface Server {
     get<T>(resource:string):Observable<T>;
-};
+}
+;
 export abstract class Server {
-    static local(): Server {
+    static local():Server {
         return new AxiosGateway('http://localhost:3004/');
     }
-};
+}
+;
 //endregion
 @Injectable()
 export class AxiosGateway implements Server {
-    constructor(private serverHost='http://localhost:3004/') {
+    private api:Subject<string>
 
+    constructor(private serverHost = 'http://localhost:3004/') {
+        this.api=new BehaviorSubject<string>('/');
     }
 
-    private request<T>(resource:string, method:string, headers: any={'X-Custom-Header': 'foobar'}) {
-        const subject = new BehaviorSubject<string>('/');
-        subject.next(resource);
-        return subject
-            .do((resource) => console.log("calling resource [",resource, "] of server: [", this.serverHost, "]"))
+    private request<T>(resource:string, method:string, headers:any = {'X-Custom-Header': 'foobar'}) {
+        this.api.next(resource);
+        return this.api
+            .do((resource) => console.log("calling resource [", resource, "] of server: [", this.serverHost, "]"))
             .flatMap(resource => Observable.fromPromise(axios.request({
                 baseURL: this.serverHost,
                 timeout: 1000,
