@@ -17,7 +17,7 @@ describe("first test", () => {
     describe("rambda", () => {
         describe("lenses", () => {
             it("should work", (done) => {
-                const aPerson={
+                const aPerson:any={
                     'name': 'beppe',
                     'father': {
                         'name':'gianluigi',
@@ -38,7 +38,42 @@ describe("first test", () => {
             ;
         })
         ;
+        describe("append", () => {
+        	describe("on deep object with collection", () => {
+        		it("should work", function(done) 
+        		{
+                    const aPerson: any={
+                        'name': 'beppe',
+                        'father': {
+                            'name':'gianluigi',
+                            'age': 65
+                        },
+                        'children': []
+                    }
+
+                    const lens= R.lensPath(['children']);
+                    const aNewPerson = R.set(lens, R.append({
+                                                                'name': 'roby'
+                                                            }
+                        , aPerson.children), aPerson);
+                    expect(aNewPerson).to.eql({
+                                        'name': 'beppe',
+                                        'father': {
+                                            'name':'gianluigi',
+                                            'age': 65
+                                        },
+                                        'children': [{
+                                            'name': 'roby'
+                                        }]
+                                    })
+        		    done();
+        		});;
+        	})
+        	;
+        })
+        
     })
+
     describe("typescript", () => {
     	describe("mixins", () => {
     		it("should work", function(done)
