@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import {HeroService} from "../app/hero.service";
 import {Hero} from "../app/hero";
 import {expect} from 'chai';
+import {Server} from "../app/utils/gateways";
 describe("HeroService", () => {
 	const testHeroes: Hero[]= [
 	  {id: 11, name: 'Mr. Nice'},
@@ -17,7 +18,7 @@ describe("HeroService", () => {
 	];
 	describe("called", () => {
 		it("should get heroes from (fake) server", (done) => {
-			const sut=new HeroService();
+			const sut=new HeroService(Server.local());
 			sut.heroes((heroes:Hero[]) => {
 				expect(heroes).to.eql(testHeroes);
 				done();
