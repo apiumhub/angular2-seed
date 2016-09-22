@@ -51,11 +51,14 @@ describe("first test", () => {
                         'children': []
                     }
 
-                    const lens= R.lensPath(['children']);
-                    const aNewPerson = R.set(lens, R.append({
-                                                                'name': 'roby'
-                                                            }
-                        , aPerson.children), aPerson);
+                    function appendToProperty(prop: string[], toAppend: any, object: any){
+                        const lens= R.lensPath(prop);
+                        const newObj = R.set(lens, R.append(toAppend
+                            , <any> R.view(lens, object)), object);
+                        return newObj;
+                    }
+
+                    const aNewPerson = appendToProperty(['children'], {'name': 'roby'}, aPerson);
                     expect(aNewPerson).to.eql({
                                         'name': 'beppe',
                                         'father': {
