@@ -9,20 +9,20 @@ import SinonSpy = Sinon.SinonSpy;
 describe("appPresenter", ()=> {
     describe("view loads", ()=> {
         it("should load heroes", (done)=> {
-            const heroes:Hero[]= [{id: 11, name: 'Mr. Nice'}]
-            const myViewMock: IHeroList = <IHeroList> <any> ({});
-            myViewMock.showHeroes = sinon.stub();
-            myViewMock.whenLoad = (cb: Function)=> {
+            const testHeroes:Hero[]= [{id: 11, name: 'Mr. Nice'}]
+            const view: IHeroList = <IHeroList> <any> ({});
+            view.showHeroes = sinon.stub();
+            view.whenLoad = (cb: Function)=> {
                 return cb();
             }
-            const myService: IHeroService = <IHeroService> <any> {};
-            myService.heroes = (cb: Function)=> {
-                return cb(heroes);
+            const service: IHeroService = <IHeroService> <any> {};
+            service.heroes = (cb: Function)=> {
+                return cb(testHeroes);
             }
-            myService.loadHeroes = sinon.stub();
-            new AppPresenter(myViewMock, myService);
-            sinon.assert.calledWith(<SinonSpy> myService.loadHeroes);
-            sinon.assert.calledWith(<SinonSpy> myViewMock.showHeroes, heroes);
+            service.loadHeroes = sinon.stub();
+            new AppPresenter(view, service);
+            sinon.assert.calledWith(<SinonSpy> service.loadHeroes);
+            sinon.assert.calledWith(<SinonSpy> view.showHeroes, testHeroes);
             done();
         })
     })
