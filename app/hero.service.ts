@@ -34,12 +34,13 @@ export const HEROES:Hero[] = [
 export interface IHeroService
 {
     loadHeroes():Subscription;
-    heroes: SubscriptionFunction;
+    heroes: SubscriptionFunction<Hero[]>;
 }
+
 @Injectable()
 export class HeroService implements IHeroService{
     heroesRefreshed:Subject<Hero[]>
-    heroes:SubscriptionFunction
+    heroes:SubscriptionFunction<Hero[]>
 
     //private server: Server;
 

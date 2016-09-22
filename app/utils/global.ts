@@ -70,7 +70,8 @@ export type AnyMap=StringKeyedMap<any>;
 
 //region function types
 import {Subscription} from "rxjs/Subscription";
-export type SubscriptionFunction=(cb: Function)=>Subscription;
+export type SubscriptionCallback<T>=(result:T)=>void;
+export type SubscriptionFunction<T>=(cb: SubscriptionCallback<T>)=>Subscription;
 //endregion
 
 
