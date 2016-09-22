@@ -10,8 +10,7 @@ describe("appPresenter", ()=> {
     describe("view loads", ()=> {
         it("should load heroes", (done)=> {
             const heroes:Hero[]= [{id: 11, name: 'Mr. Nice'}]
-            const myViewMock: IHeroList =
-                <IHeroList> <any> ({});
+            const myViewMock: IHeroList = <IHeroList> <any> ({});
             myViewMock.showHeroes = sinon.stub();
             myViewMock.whenLoad = (cb: Function)=> {
                 return cb();
