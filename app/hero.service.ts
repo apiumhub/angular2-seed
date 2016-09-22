@@ -45,7 +45,7 @@ export class HeroService implements IHeroService{
     //private server: Server;
 
     onHeroSaved:Subject<Hero>;
-    private savedHero:Function;
+    public savedHero:Function;
 
     constructor(@Optional() private server?:Server) {
         this.server = this.server || Server.local();
@@ -61,7 +61,12 @@ export class HeroService implements IHeroService{
 
     saveHero(hero:Hero):any {
         console.log(hero);
-        this.onHeroSaved.next(hero)
+        this.server.post<Hero>('/hero', hero)
+            .subscribe(
+                    this.onHeroSaved,
+                    (err:Error) => console.error('Error: ' + err),
+                    () => console.log('Completed'));
+        //this.onHeroSaved.next(hero)
     }
 
     loadHeroes():Subscription {
