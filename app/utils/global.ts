@@ -13,11 +13,11 @@ export function mapFromDTO<T,V>(dto:T, instance:V):V
     return <V> R.mapObjIndexed(
             (value:any, key:any, obj:any) => value.key
         ,R.mapObjIndexed(
-        (value:any, key:any, obj:any) => {
-            const lens=R.lensPath(["key"]);
-            const newInstance=R.set(lens, value, instance);
-            return newInstance;
-        },
+            (value:any, key:any, obj:any) => {
+                const lens=R.lensPath(["key"]);
+                const newInstance=R.set(lens, value, instance);
+                return newInstance;
+            },
         dto
     ));
 }
