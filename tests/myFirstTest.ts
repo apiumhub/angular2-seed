@@ -3,7 +3,7 @@ import {Subject} from 'rxjs/Rx';
 import {expect} from 'chai';
 import * as R from 'ramda';
 import arrayContaining = jasmine.arrayContaining;
-import {StringKeyedMap, changePropertyMap, appendToProperty, changeProperty} from "../app/utils/global";
+import {StringKeyedMap, changePropertyMap, appendToProperty, changeProperty, mapFromDTO} from "../app/utils/global";
 
 
 
@@ -78,6 +78,36 @@ describe("first test", () => {
                 ;
             })
             ;
+            describe("map object", ()=>{
+            	describe("in constructor", ()=>{
+            		it("should work", (done) =>{
+            			class StructType
+                        {
+                            name:string;
+                            surname:string;
+                        }
+                        class NonStructType
+                        {
+                            name: string;
+                            surname:string;
+                            static fromDTO(dto:StructType):NonStructType
+                            {
+                                const instance=new NonStructType();
+                                return mapFromDTO(dto, instance);
+                            }
+                            toDto():StructType
+                            {
+                                return {name: "tu",surname:"tutu"};
+                            }
+                        }
+                        const obj: StructType = {name: "yo", surname: "yoyo"};
+                        const obj2 = NonStructType.fromDTO(obj);
+                        expect(obj2.name).to.eql("yo");
+                        expect(obj2.surname).to.eql("yoyo");
+            			done();
+            		});
+            	});
+            });
         })
 
     })

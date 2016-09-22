@@ -2,6 +2,19 @@
  * Created by christian on 22/09/16.
  */
 import R = require("ramda");
+export function mapFromDTO<T,V>(dto:T, instance:V):V
+{
+    return <V> R.mapObjIndexed(
+            (value:any, key:any, obj:any) => value.key
+        ,R.mapObjIndexed(
+        (value:any, key:any, obj:any) => {
+            const lens=R.lensPath(["key"]);
+            const newInstance=R.set(lens, value, instance);
+            return newInstance;
+        },
+        dto
+    ));
+}
 /**
  * a function to change a property that is a Map in an immutable way
  * @param object:V  the object to change
