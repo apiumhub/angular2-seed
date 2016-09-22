@@ -17,35 +17,34 @@ describe("first test", () => {
     describe("rambda", () => {
         describe("lenses", () => {
             it("should work", (done) => {
-                const aPerson:any={
+                const aPerson:any = {
                     'name': 'beppe',
                     'father': {
-                        'name':'gianluigi',
+                        'name': 'gianluigi',
                         'age': 65
                     }
                 }
-                const lens= R.lensPath(['father', 'age']);
+                const lens = R.lensPath(['father', 'age']);
                 const aNewPerson = R.set(lens, 66, aPerson);
                 expect(aNewPerson).to.eql({
-                                    'name': 'beppe',
-                                    'father': {
-                                        'name':'gianluigi',
-                                        'age': 66
-                                    }
-                                })
+                    'name': 'beppe',
+                    'father': {
+                        'name': 'gianluigi',
+                        'age': 66
+                    }
+                })
                 done();
             });
             ;
         })
         ;
         describe("append", () => {
-        	describe("on deep object with collection", () => {
-        		it("should work", function(done) 
-        		{
-                    const aPerson: any={
+            describe("on deep object with collection", () => {
+                it("should work", function (done) {
+                    const aPerson:any = {
                         'name': 'beppe',
                         'father': {
-                            'name':'gianluigi',
+                            'name': 'gianluigi',
                             'age': 65
                         },
                         'directFamily': {
@@ -53,8 +52,8 @@ describe("first test", () => {
                         }
                     }
 
-                    function appendToProperty<T, V>(prop: string[], toAppend: T, object: V): V {
-                        const lens= R.lensPath(prop);
+                    function appendToProperty<T, V>(prop:string[], toAppend:T, object:V):V {
+                        const lens = R.lensPath(prop);
                         const newObj = R.set(lens, R.append(toAppend
                             , <T[]> R.view(lens, object)), object);
                         return newObj;
@@ -62,44 +61,41 @@ describe("first test", () => {
 
                     const aNewPerson = appendToProperty(['directFamily', 'children'], {'name': 'roby'}, aPerson);
                     expect(aNewPerson).to.eql({
-                                        'name': 'beppe',
-                                        'father': {
-                                            'name':'gianluigi',
-                                            'age': 65
-                                        },
+                        'name': 'beppe',
+                        'father': {
+                            'name': 'gianluigi',
+                            'age': 65
+                        },
 
-                                        'directFamily': {
-                                            'children': [{
-                                                'name': 'roby'
-                                            }]
-                                        },
-                                    })
-        		    done();
-        		});;
-        	})
-        	;
+                        'directFamily': {
+                            'children': [{
+                                'name': 'roby'
+                            }]
+                        },
+                    })
+                    done();
+                });
+                ;
+            })
+            ;
         })
-        
+
     })
 
     describe("typescript", () => {
-    	describe("mixins", () => {
-    		it("should work", function(done)
-    		{
-    		    class Trait1
-                {
+        describe("mixins", () => {
+            it("should work", function (done) {
+                class Trait1 {
                     hello():string {
                         return "hello"
                     }
                 }
-                class Trait2
-                {
+                class Trait2 {
                     world():string {
                         return "world"
                     }
                 }
-                class Mixin implements Trait1, Trait2
-                {
+                class Mixin implements Trait1, Trait2 {
                     hello():string {
                         return "";
                     }
@@ -109,28 +105,64 @@ describe("first test", () => {
                     }
 
                 }
-                function applyMixins(derivedCtor: any, baseCtors: any[]) {
+                function applyMixins(derivedCtor:any, baseCtors:any[]) {
                     baseCtors.forEach(baseCtor => {
                         Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
                             derivedCtor.prototype[name] = baseCtor.prototype[name];
                         });
                     });
                 }
+
                 applyMixins(Mixin, [Trait1, Trait2]);
-                const inst=new Mixin();
-                expect(inst.hello()+" "+inst.world()).to.eql("hello world");
-    		    done();
-    		});;
-    	})
-    	;
-        describe("map types", () => {
-        	it("should work", (done) => {
-        		class StringKeyedMap<T> { [key: string]: T; };
-        		class IntKeyedMap<T> { [key: number]: T; };
-        		done();
-        	});;
+                const inst = new Mixin();
+                expect(inst.hello() + " " + inst.world()).to.eql("hello world");
+                done();
+            });
+            ;
         })
-        
+        ;
+        describe("map types", () => {
+            it("should work", (done) => {
+                class StringKeyedMap<T> { [key: string]: T;};
+                class IntKeyedMap<T> { [key: number]: T;};
+                type AnyMap=StringKeyedMap<any>;
+                const aPerson:any = {
+                    'name': 'beppe',
+                    'father': {
+                        'name': 'gianluigi',
+                        'age': 65
+                    },
+                    'directFamily': {
+                        'children': new StringKeyedMap()
+                    }
+                }
+                function changePropertyMap<T, V>(prop: string[], toAppend:{key: string, value: T}, object:V):V
+                {
+                    const lens = R.lensPath(prop);
+                    const newObj = R.set(lens, R.assoc(
+                        toAppend.key,
+                        toAppend.value
+                        , <T[]> R.view(lens, object)), object);
+                    return newObj;
+                }
+                const newPerson=changePropertyMap(['directFamily', 'children'], {key: 'roby', value:{name: 'roby'}}, aPerson)
+                expect(newPerson).to.eql({
+                                    'name': 'beppe',
+                                    'father': {
+                                        'name': 'gianluigi',
+                                        'age': 65
+                                    },
+                                    'directFamily': {
+                                        'children': {
+                                            'roby': {'name': 'roby'}
+                                        }
+                                    }
+                                })
+                done();
+            });
+            ;
+        })
+
     })
 
 
