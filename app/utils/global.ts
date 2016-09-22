@@ -24,6 +24,11 @@ export function appendToProperty<T, V>(object:V, prop:string[], toAppend:T):V {
         , <T[]> R.view(lens, object)), object);
     return newObj;
 }
+export function changeProperty<T,V>(object: V, prop: string[], value:T):V
+{
+    const lens = R.lensPath(prop);
+    return R.set(lens, value, object);
+}
 export class StringKeyedMap<T> { [key: string]: T;};
 export class IntKeyedMap<T> { [key: number]: T;};
 export type AnyMap=StringKeyedMap<any>;

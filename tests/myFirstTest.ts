@@ -3,7 +3,7 @@ import {Subject} from 'rxjs/Rx';
 import {expect} from 'chai';
 import * as R from 'ramda';
 import arrayContaining = jasmine.arrayContaining;
-import {StringKeyedMap, changePropertyMap, appendToProperty} from "../app/utils/global";
+import {StringKeyedMap, changePropertyMap, appendToProperty, changeProperty} from "../app/utils/global";
 
 
 
@@ -31,8 +31,8 @@ describe("first test", () => {
                         'age': 65
                     }
                 }
-                const lens = R.lensPath(['father', 'age']);
-                const aNewPerson = R.set(lens, 66, aPerson);
+
+                const aNewPerson = changeProperty(aPerson, ['father', 'age'], 66);
                 expect(aNewPerson).to.eql({
                     'name': 'beppe',
                     'father': {
