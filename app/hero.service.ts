@@ -15,6 +15,7 @@ import axios from 'axios';
 import {Subscription} from "rxjs/Subscription";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Server, AxiosGateway} from './utils/gateways'
+import {SubscriptionFunction} from './utils/global'
 
 
 
@@ -30,10 +31,15 @@ export const HEROES:Hero[] = [
     {id: 19, name: 'Magma'},
     {id: 20, name: 'Tornado'}
 ];
+export interface IHeroService
+{
+    loadHeroes():Subscription;
+    heroes: SubscriptionFunction;
+}
 @Injectable()
-export class HeroService {
+export class HeroService implements IHeroService{
     heroesRefreshed:Subject<Hero[]>
-    heroes:Function
+    heroes:SubscriptionFunction
 
     //private server: Server;
 

@@ -68,3 +68,9 @@ export class IntKeyedMap<T> { [key: number]: T;};
 export type AnyMap=StringKeyedMap<any>;
 //endregion
 
+//region function types
+import {Subscription} from "rxjs/Subscription";
+export type SubscriptionFunction=(cb: Function)=>Subscription;
+//endregion
+
+

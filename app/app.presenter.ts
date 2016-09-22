@@ -1,5 +1,5 @@
 import {Hero} from './hero';
-import {HeroService} from './hero.service';
+import {HeroService, IHeroService} from './hero.service';
 import {Subject} from "rxjs/Subject";
 import {Subscription} from "rxjs/Subscription";
 export interface IHeroList {
@@ -7,7 +7,7 @@ export interface IHeroList {
     whenLoad:Function;
 }
 export class AppPresenter {
-    constructor(heroesListView:IHeroList, heroService:HeroService) {
+    constructor(heroesListView:IHeroList, heroService:IHeroService) {
         //hl.loadEvent.subscribe((e) => console.log("event",e));
         heroesListView.whenLoad(() => heroService.loadHeroes());
         heroService.heroes((heroes:Hero[]) => heroesListView.showHeroes(heroes));
