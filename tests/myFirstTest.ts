@@ -136,6 +136,14 @@ describe("first test", () => {
                         'children': new StringKeyedMap()
                     }
                 }
+
+                /**
+                 * a function to change a property that is a Map in an immutable way
+                 * @param prop:string[] the property (nested).If it is person.directFamily.children has to be ['directFamily', 'children']
+                 * @param toAppend:T an object with as key the key and as value the object to append, like {key: string, value: T}
+                 * @param object:V  the object to change
+                 * @returns {V}
+                 */
                 function changePropertyMap<T, V>(prop: string[], toAppend:{key: string, value: T}, object:V):V
                 {
                     const lens = R.lensPath(prop);
