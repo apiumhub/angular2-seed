@@ -103,7 +103,6 @@ class AppComponent implements IHeroList, OnInit {
       </ul>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    directives: [HeroDetailComponent],
     providers: [HeroService]
 })
 export class InjectedAppComponent extends AppComponent
