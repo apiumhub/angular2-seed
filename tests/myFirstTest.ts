@@ -48,26 +48,31 @@ describe("first test", () => {
                             'name':'gianluigi',
                             'age': 65
                         },
-                        'children': []
+                        'directFamily': {
+                            'children': []
+                        }
                     }
 
-                    function appendToProperty(prop: string[], toAppend: any, object: any){
+                    function appendToProperty<T, V>(prop: string[], toAppend: T, object: V): V {
                         const lens= R.lensPath(prop);
                         const newObj = R.set(lens, R.append(toAppend
-                            , <any> R.view(lens, object)), object);
+                            , <T[]> R.view(lens, object)), object);
                         return newObj;
                     }
 
-                    const aNewPerson = appendToProperty(['children'], {'name': 'roby'}, aPerson);
+                    const aNewPerson = appendToProperty(['directFamily', 'children'], {'name': 'roby'}, aPerson);
                     expect(aNewPerson).to.eql({
                                         'name': 'beppe',
                                         'father': {
                                             'name':'gianluigi',
                                             'age': 65
                                         },
-                                        'children': [{
-                                            'name': 'roby'
-                                        }]
+
+                                        'directFamily': {
+                                            'children': [{
+                                                'name': 'roby'
+                                            }]
+                                        },
                                     })
         		    done();
         		});;
@@ -118,6 +123,14 @@ describe("first test", () => {
     		});;
     	})
     	;
+        describe("map types", () => {
+        	it("should work", (done) => {
+        		class StringKeyedMap<T> { [key: string]: T; };
+        		class IntKeyedMap<T> { [key: number]: T; };
+        		done();
+        	});;
+        })
+        
     })
 
 
