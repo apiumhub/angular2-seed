@@ -21,8 +21,8 @@ describe("appPresenter", ()=> {
             }
             myService.loadHeroes = sinon.stub();
             new AppPresenter(myViewMock, myService);
-            sinon.assert.alwaysCalledWith(<SinonSpy> myService.loadHeroes);
-            sinon.assert.alwaysCalledWith(<SinonSpy> myViewMock.showHeroes, heroes);
+            sinon.assert.calledWith(<SinonSpy> myService.loadHeroes);
+            sinon.assert.calledWith(<SinonSpy> myViewMock.showHeroes, heroes);
             done();
         })
     })
