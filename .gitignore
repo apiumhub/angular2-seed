@@ -4,6 +4,7 @@ node_modules
 *.js
 !karma.conf.js
 !systemjs.config.js
+!Gulpfile.js
 *.log
 dist/
 *.iml
