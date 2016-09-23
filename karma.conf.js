@@ -8,8 +8,10 @@ module.exports = function (config) {
         files: [
             {pattern: 'node_modules/systemjs/dist/system-polyfills.js', instrument: false},
             {pattern: 'node_modules/systemjs/dist/system.js', instrument: false},
-            {pattern: 'node_modules/rxjs/bundles/Rx.js', included: true, watched: true},
+            {pattern: 'node_modules/rxjs/bundles/Rx.min.js', included: true, watched: true},
             {pattern: 'node_modules/reflect-metadata/**/*.js', included: true, watched: true},
+            {pattern: 'node_modules/sinon/lib/sinon.js', included: true, watched: true},
+            {pattern: 'node_modules/sinon-chai/lib/sinon-chai.js', included: true, watched: true},
             {pattern: 'app/**/hero.js', included: true, watched: true},
             {pattern: 'app/**/hero.service.js', included: true, watched: true},
             {pattern: 'tests/**/*.js', included: true, watched: true},
