@@ -2,6 +2,8 @@
 node_modules
 *.js.map
 *.js
+!karma.conf.js
+!systemjs.config.js
 *.log
 dist/
 *.iml
