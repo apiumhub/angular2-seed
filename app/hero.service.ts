@@ -33,7 +33,7 @@ export const HEROES:Hero[] = [
 ];
 export interface IHeroService
 {
-    loadHeroes():Subscription;
+    loadHeroes():Observable<Hero[]>;
     heroes: SubscriptionFunction<Hero[]>;
 }
 
@@ -61,18 +61,11 @@ export class HeroService implements IHeroService{
 
     saveHero(hero:Hero):any {
         console.log(hero);
-        this.server.post<Hero>('/hero', hero)
-            .subscribe(
-                    this.onHeroSaved,
-                    (err:Error) => console.error('Error: ' + err),
-                    () => console.log('Completed'));
-        //this.onHeroSaved.next(hero)
+        this.server.post<Hero>('/hero', hero, this.onHeroSaved);
     }
 
-    loadHeroes():Subscription {
-        return this.server.get<Hero[]>('/heroes').subscribe(this.heroesRefreshed,
-            (err:Error) => console.error('Error: ' + err),
-            () => console.log('Completed'));
+    loadHeroes():Observable<Hero[]> {
+        return this.server.get<Hero[]>('/heroes', this.heroesRefreshed);
     }
 }
 
