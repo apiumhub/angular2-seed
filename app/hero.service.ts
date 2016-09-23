@@ -55,17 +55,22 @@ export class HeroService implements IHeroService{
         this.savedHero = newEvent(this.onHeroSaved)
     }
 
+    protected getServer():Server
+    {
+        return this.server = this.server || Server.local();
+    }
+
     getHeroes() {
         return Promise.resolve(HEROES).then((heroes) => this.heroesRefreshed.next(heroes));
     }
 
     saveHero(hero:Hero):any {
         console.log(hero);
-        this.server.post<Hero>('/hero', hero, this.onHeroSaved);
+        this.getServer().post<Hero>('/hero', hero, this.onHeroSaved);
     }
 
     loadHeroes():Observable<Hero[]> {
-        return this.server.get<Hero[]>('/heroes', this.heroesRefreshed);
+        return this.getServer().get<Hero[]>('/heroes', this.heroesRefreshed);
     }
 }
 

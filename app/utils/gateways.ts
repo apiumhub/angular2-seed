@@ -36,7 +36,7 @@ export class AxiosGateway implements Server {
     }
 
 
-    private request<T>(resource: string, method: string, data: T = null, headers: any = {'X-Custom-Header': 'foobar'}): Observable<T> {
+    private request<T>(resource: string, method: string, data: T|null = null, headers: any = {'X-Custom-Header': 'foobar'}): Observable<T> {
         this.api.next(resource);
         var config: any = {
             baseURL: this.serverHost,
@@ -55,7 +55,7 @@ export class AxiosGateway implements Server {
             .map((resp) => resp.data);
     }
 
-    private manageResponse<T>(observer: Observer<T>, observable: Observable<T>, resource: string): Observable<T> {
+    private manageResponse<T>(observable: Observable<T>, resource: string, observer: Observer<T>|null): Observable<T> {
         if (observer) {
             const subscrition = observable.subscribe(
                 (value: T)=>{
@@ -77,13 +77,12 @@ export class AxiosGateway implements Server {
         return observable;
     }
 
-    get<T>(resource: string, observer?: Observer<T>): Observable<T> {
-        return this.manageResponse(observer, this.request<T>(resource, 'get'), resource);
+    get<T>(resource: string, observer: Observer<T>|null=null): Observable<T> {
+        return this.manageResponse(this.request<T>(resource, 'get'), resource, observer);
     }
 
 
-    post<T>(resource: string, payload: T, observer?: Observer<T>): Observable<T> {
-        return this.manageResponse(observer,
-            this.request<T>(resource, 'post', payload), resource);
+    post<T>(resource: string, payload: T, observer: Observer<T>|null=null): Observable<T> {
+        return this.manageResponse(this.request<T>(resource, 'post', payload), resource, observer);
     }
 }
