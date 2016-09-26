@@ -1,7 +1,6 @@
-import {expect} from 'chai';
-import {AppPresenter, IHeroList} from '../app/app.presenter'
+import {AppPresenter, IHeroList} from "../app/app.presenter";
 import {Hero} from "../app/hero";
-import * as sinon from 'sinon';
+import * as sinon from "sinon";
 import {IHeroService} from "../app/hero.service";
 import SinonSpy = Sinon.SinonSpy;
 

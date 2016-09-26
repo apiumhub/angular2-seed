@@ -1,7 +1,5 @@
-import {Hero} from './hero';
-import {HeroService, IHeroService} from './hero.service';
-import {Subject} from "rxjs/Subject";
-import {Subscription} from "rxjs/Subscription";
+import {Hero} from "./hero";
+import {IHeroService} from "./hero.service";
 export interface IHeroList {
     showHeroes(heroes:Hero[]): void;
     whenLoad:Function;

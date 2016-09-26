@@ -1,12 +1,9 @@
-import { Component } from '@angular/core';
-import { HeroDetailComponent } from './hero-detail.component';
-import {ChangeDetectionStrategy} from '@angular/core';
-import { HeroService } from './hero.service';
-import { OnInit } from '@angular/core';
-import {Hero} from './hero';
-import {Observable, Subject} from 'rxjs/Rx';
-import {IHeroList, AppPresenter} from './app.presenter'
-import {newEvent} from './utils/newEvent'
+import {Component, ChangeDetectionStrategy, OnInit} from "@angular/core";
+import {HeroService} from "./hero.service";
+import {Hero} from "./hero";
+import {Subject} from "rxjs/Rx";
+import {IHeroList, AppPresenter} from "./app.presenter";
+import {newEvent} from "./utils/newEvent";
 
 class AppComponent implements IHeroList, OnInit {
     private title = 'Tour of Heroes';

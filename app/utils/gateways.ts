@@ -1,18 +1,15 @@
 /**
  * Created by christian on 8/09/16.
  */
-import {Injectable} from '@angular/core';
-import {Observable, Subject} from 'rxjs/Rx';
-import 'rxjs/add/observable/dom/ajax';
-import 'rxjs/add/observable/fromPromise';
-import 'rxjs/add/observable/defer';
-import 'rxjs/add/operator/retry';
+import {Injectable} from "@angular/core";
+import {Observable, Subject} from "rxjs/Rx";
+import "rxjs/add/observable/dom/ajax";
+import "rxjs/add/observable/fromPromise";
+import "rxjs/add/observable/defer";
+import "rxjs/add/operator/retry";
 import {Observer} from "rxjs/Observer";
-import {AjaxObservable} from "rxjs/observable/dom/AjaxObservable";
-import axios from 'axios';
-import {Subscription} from "rxjs/Subscription";
+import axios from "axios";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {error} from "util";
 
 //region: using type merging:
 export interface Server {

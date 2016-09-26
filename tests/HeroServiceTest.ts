@@ -1,7 +1,7 @@
-import 'reflect-metadata';
-import {HeroService, IHeroService} from "../app/hero.service";
+import "reflect-metadata";
+import {HeroService} from "../app/hero.service";
 import {Hero} from "../app/hero";
-import {expect} from 'chai';
+import {expect} from "chai";
 import {Server} from "../app/utils/gateways";
 describe("HeroService", () => {
 	const testHeroes: Hero[]= [

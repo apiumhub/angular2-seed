@@ -1,22 +1,14 @@
-import { Injectable } from '@angular/core';
-import { Inject } from '@angular/core';
-import { Optional } from '@angular/core';
-import {Observable, Subject} from 'rxjs/Rx';
-import 'rxjs/observable/dom/ajax';
-import 'rxjs/observable/fromPromise';
-import 'rxjs/observable/defer';
-import 'rxjs/operator/retry';
-import 'rxjs/operator/merge';
-import {newEvent} from './utils/newEvent'
-import { Hero } from './hero';
-import {Observer} from "rxjs/Observer";
-import {AjaxObservable} from "rxjs/observable/dom/AjaxObservable";
-import axios from 'axios';
-import {Subscription} from "rxjs/Subscription";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {Server, AxiosGateway} from './utils/gateways'
-import {SubscriptionFunction} from './utils/global'
-
+import {Injectable, Optional} from "@angular/core";
+import {Observable, Subject} from "rxjs/Rx";
+import "rxjs/observable/dom/ajax";
+import "rxjs/observable/fromPromise";
+import "rxjs/observable/defer";
+import "rxjs/operator/retry";
+import "rxjs/operator/merge";
+import {newEvent} from "./utils/newEvent";
+import {Hero} from "./hero";
+import {Server} from "./utils/gateways";
+import {SubscriptionFunction} from "./utils/global";
 
 
 export const HEROES:Hero[] = [
