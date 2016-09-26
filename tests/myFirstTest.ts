@@ -1,5 +1,5 @@
 import {Hero} from "../app/hero";
-import {Subject, Observable, BehaviorSubject} from "rxjs/Rx";
+import {Subject, Observable, BehaviorSubject, AsyncSubject, ReplaySubject} from "rxjs/Rx";
 import {expect} from "chai";
 import {StringKeyedMap, changePropertyMap, appendToProperty, changeProperty, mapFromDTO} from "../app/glue/global";
 import arrayContaining = jasmine.arrayContaining;
@@ -208,11 +208,25 @@ describe("first test", () => {
         			{
                         const subject = new BehaviorSubject("A");
                         subject.subscribe((value)=>{
-                            expect(value).to.eql("A");
+                            expect(value).to.
+                            eql("A");
                             done();
                         });
                         subject.next("B");
         			});
+        		});
+        	});
+        });
+        describe("AsyncSubject", ()=>{
+        	describe("has initial value", ()=>{
+        		it("should NOT replay initial value", (done) =>{
+                    const subject = new AsyncSubject<string>();
+                    subject.subscribe((value:string)=>{
+                        expect(value).to.not.eql("A");
+                        done();
+                    });
+                    subject.next("B");
+        			done();
         		});
         	});
         });
