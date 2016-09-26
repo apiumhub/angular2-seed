@@ -46,5 +46,6 @@
       "id": 11,
       "name": "Mr. Nice"
     }
-  ]
+  ],
+  "test-resource": [{}]
 }
