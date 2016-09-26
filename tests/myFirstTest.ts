@@ -1,5 +1,5 @@
 import {Hero} from "../app/hero";
-import {Subject, Observable} from "rxjs/Rx";
+import {Subject, Observable, BehaviorSubject} from "rxjs/Rx";
 import {expect} from "chai";
 import {StringKeyedMap, changePropertyMap, appendToProperty, changeProperty, mapFromDTO} from "../app/glue/global";
 import arrayContaining = jasmine.arrayContaining;
@@ -184,12 +184,16 @@ describe("first test", () => {
     describe("rx", ()=>{
     	describe("wired but not called", ()=>{
     		it("should wire correctly", (done) =>{
-                const obs=Observable.fromPromise(axios.request({
+
+                const subject=new BehaviorSubject("");
+                const obs=subject
+                    .flatMap(
+                        (value:any)=>Observable.fromPromise(axios.request({
                             baseURL: 'http://localhost:3004/',
                             timeout: 1000,
                             method: 'get',
                             url: 'test-resource'
-                        }))
+                        })))
                 obs.do((response:any)=>{
                     console.log(response.data);
                     expect(response.data).to.eql([{}])
