@@ -45,12 +45,14 @@ export class AxiosGateway implements Server {
         };
         return this.api
             .do((resource) => console.log("calling resource [", resource, "] of server: [", this.serverHost, "]"))
-            .flatMap(resource => Observable.fromPromise(axios.request(config)))
+            .flatMap((resource:string) => {
+                return Observable.fromPromise(axios.request(config))
+            })
             .retry(3)
-            .do((resp) => {
+            .do((resp:any) => {
                 console.log("returned from call for resource: ", resource, JSON.stringify(resp.data));
             })
-            .map((resp) => resp.data);
+            .map((resp:any) => resp.data);
     }
 
     private manageResponse<T>(observable: Observable<T>, resource: string, observer: Observer<T>|null): Observable<T> {
