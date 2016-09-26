@@ -217,16 +217,15 @@ describe("first test", () => {
         		});
         	});
         });
-        describe("AsyncSubject", ()=>{
+        describe("Subject", ()=>{
         	describe("has initial value", ()=>{
         		it("should NOT replay initial value", (done) =>{
-                    const subject = new AsyncSubject<string>();
+                    const subject = new Subject<string>();
                     subject.subscribe((value:string)=>{
                         expect(value).to.not.eql("A");
                         done();
                     });
                     subject.next("B");
-        			done();
         		});
         	});
         });
