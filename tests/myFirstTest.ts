@@ -201,6 +201,21 @@ describe("first test", () => {
                 subject.next("");
     		});
     	});
+        describe("BehaviorSubject", ()=>{
+        	describe("has initial value", ()=>{
+        		describe("and flatMap called", ()=>{
+        			it("replays initial value", function(done)
+        			{
+                        const subject = new BehaviorSubject("A");
+                        subject.subscribe((value)=>{
+                            expect(value).to.eql("A");
+                            done();
+                        });
+                        subject.next("B");
+        			});
+        		});
+        	});
+        });
     });
 
 });
