@@ -22,7 +22,7 @@ class AppComponent implements IHeroList, OnInit {
     constructor() {
         this.heroes=new Subject<Hero[]>();
         this.loadEvent= new Subject();
-        this.whenLoad = newEvent(this.loadEvent);
+        this.whenLoad = newEvent(this.loadEvent, "loadEvent");
     }
 
     showHeroes(heroes: Hero[])

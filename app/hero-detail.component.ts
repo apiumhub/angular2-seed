@@ -31,7 +31,7 @@ export class HeroDetailComponent implements IChangedHero {
 
   constructor(private heroService: HeroService) {
     this.onSave = new Subject<Hero>();
-    this.changedHero = newEvent(this.onSave);
+    this.changedHero = newEvent(this.onSave, "changedHero");
     new HeroDetailPresenter(this, heroService)
   }
   clicked() {

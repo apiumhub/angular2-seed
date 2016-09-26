@@ -42,9 +42,9 @@ export class HeroService implements IHeroService{
     constructor(@Optional() private server?:Server) {
         this.server = this.server || Server.local();
         this.heroesRefreshed = new Subject<Hero[]>();
-        this.heroes = newEvent(this.heroesRefreshed)
+        this.heroes = newEvent(this.heroesRefreshed, "heroesRefreshed")
         this.onHeroSaved = new Subject<Hero>();
-        this.savedHero = newEvent(this.onHeroSaved)
+        this.savedHero = newEvent(this.onHeroSaved, "onHeroSaved")
     }
 
     protected getServer():Server
