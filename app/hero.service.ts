@@ -66,11 +66,11 @@ export class HeroService implements IHeroService{
 
     saveHero(hero:Hero):any {
         console.log(hero);
-        this.getServer().post<Hero>('/hero', hero, this.onHeroSaved);
+        this.getServer().post('/hero', hero, this.onHeroSaved);
     }
 
     loadHeroes():Observable<Hero[]> {
-        return this.getServer().get<Hero[]>('/heroes', this.heroesRefreshed);
+        return this.getServer().get('/heroes', this.heroesRefreshed);
     }
 }
 
