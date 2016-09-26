@@ -1,9 +1,9 @@
-import {Subject} from "rxjs/Rx";
+import {Observable} from "rxjs/Rx";
 import {SubscriptionFunction, CompleteCallback, ErrorCallback, SubscriptionCallback} from "./global";
-export function newEvent<T>(subject: Subject<T>, name:string="event name not specified"):SubscriptionFunction<T>
+export function newEvent<T>(observable: Observable<T>, name:string="event name not specified"):SubscriptionFunction<T>
 {
     return (okFunction: SubscriptionCallback<T>, errorFunction?: ErrorCallback, completeFunction?: CompleteCallback) =>
-        subject.subscribe.call(subject, (value:T) => {
+        observable.subscribe.call(observable, (value:T) => {
             console.log("arrived value in event named: [",name,"] value: [", value, "]");
             return okFunction(value);
         }, (error:any) => {
