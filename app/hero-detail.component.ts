@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Hero } from './hero';
 import {Subject} from "rxjs/Subject";
-import {newEvent} from "./utils/newEvent";
+import {newEvent} from "./glue/newEvent";
 import {HeroService} from "./hero.service";
 import {HeroDetailPresenter} from "./herodetail.presenter";
 import {IChangedHero} from "./herodetail.presenter";

@@ -2,7 +2,7 @@ import "reflect-metadata";
 import {HeroService} from "../app/hero.service";
 import {Hero} from "../app/hero";
 import {expect} from "chai";
-import {Server} from "../app/utils/gateways";
+import {Server} from "../app/glue/gateways";
 describe("HeroService", () => {
 	const testHeroes: Hero[]= [
 	  {id: 11, name: 'Mr. Nice'},

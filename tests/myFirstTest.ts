@@ -1,7 +1,7 @@
 import {Hero} from "../app/hero";
 import {Subject} from "rxjs/Rx";
 import {expect} from "chai";
-import {StringKeyedMap, changePropertyMap, appendToProperty, changeProperty, mapFromDTO} from "../app/utils/global";
+import {StringKeyedMap, changePropertyMap, appendToProperty, changeProperty, mapFromDTO} from "../app/glue/global";
 import arrayContaining = jasmine.arrayContaining;
 
 

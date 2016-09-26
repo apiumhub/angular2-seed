@@ -5,10 +5,10 @@ import "rxjs/observable/fromPromise";
 import "rxjs/observable/defer";
 import "rxjs/operator/retry";
 import "rxjs/operator/merge";
-import {newEvent} from "./utils/newEvent";
+import {newEvent} from "./glue/newEvent";
 import {Hero} from "./hero";
-import {Server} from "./utils/gateways";
-import {SubscriptionFunction} from "./utils/global";
+import {Server} from "./glue/gateways";
+import {SubscriptionFunction} from "./glue/global";
 
 
 export const HEROES:Hero[] = [

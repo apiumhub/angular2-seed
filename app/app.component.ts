@@ -3,7 +3,7 @@ import {HeroService} from "./hero.service";
 import {Hero} from "./hero";
 import {Subject} from "rxjs/Rx";
 import {IHeroList, AppPresenter} from "./app.presenter";
-import {newEvent} from "./utils/newEvent";
+import {newEvent} from "./glue/newEvent";
 
 class AppComponent implements IHeroList, OnInit {
     private title = 'Tour of Heroes';
