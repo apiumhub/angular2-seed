@@ -185,7 +185,7 @@ describe("first test", () => {
     	describe("wired but not called", ()=>{
     		it("should wire correctly", (done) =>{
 
-                const subject=new BehaviorSubject("");
+                const subject=new Subject<any>();
                 const obs=subject
                     .flatMap(
                         (value:any)=>Observable.fromPromise(axios.request({
@@ -198,6 +198,7 @@ describe("first test", () => {
                     console.log(response.data);
                     expect(response.data).to.eql([{}])
                 }).subscribe(()=>done());
+                subject.next("");
     		});
     	});
     });
