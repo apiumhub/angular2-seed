@@ -37,5 +37,9 @@ export class HeroDetailComponent implements IChangedHero {
   clicked() {
     this.onSave.next(this.hero);
   }
+
+  onClose(funct: ()=>any) {
+
+  }
 }
 
