@@ -2,7 +2,7 @@
  * Created by christian on 8/09/16.
  */
 import {Injectable} from "@angular/core";
-import {Observable, Subject} from "rxjs/Rx";
+import {Observable, Subject, Subscription} from "rxjs/Rx";
 import {ObservableInput} from "rxjs/Observable";
 import "rxjs/add/observable/dom/ajax";
 import "rxjs/add/observable/fromPromise";
@@ -24,7 +24,12 @@ export abstract class Server {
 }
 ;
 //endregion
-export class OnlyLatestFilteredCall<T>
+export interface IPipeline<T>
+{
+    run(resource:string):void;
+    subscribe(cb: ((value: T) => void)):Subscription;
+}
+export class OnlyLatestFilteredCall<T> implements IPipeline<T>
 {
     private continuousLoadPipeline:Subject<string>=new Subject<string>();
     private observable: ObservableInput<T>;
