@@ -235,7 +235,7 @@ describe("first test", () => {
                     const subj2=new Subject<string>();
                     const subj3=new Subject<string>();
                     const subjects: Observable<string>[] = [subj1, subj2, subj3];
-                    const finalObservable:Observable<string>=subjects.reduce((prev: Observable<string>, curr: Observable<string>)=>Observable.merge(prev, curr));
+                    const finalObservable:Observable<string>=subjects.reduce((prev: Observable<string>, curr: Observable<string>)=>prev.merge(curr));
                     let values: string[] = [];
                     finalObservable.subscribe((value:string)=>{
                         console.log(value);
