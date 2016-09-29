@@ -64,6 +64,16 @@ export class HeroService implements IHeroService{
     loadHeroes():Observable<Hero[]> {
         return this.getServer().get('/heroes', this.heroesRefreshed);
     }
+
+    private continuousLoadHeroPipeline:Subject<Hero[]>=new Subject<Hero[]>();
+    continuouslyLoadHeroes():void {
+        //region could be made in constructor
+        this.continuousLoadHeroPipeline
+            .switchMap(()=>this.getServer().get('/heroes'))
+            .subscribe(this.heroesRefreshed);
+        //endregion
+        this.continuousLoadHeroPipeline.next([]);
+    }
 }
 
 //array map extension
