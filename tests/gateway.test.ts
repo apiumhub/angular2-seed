@@ -4,7 +4,7 @@ import {expect} from "chai";
 import {Subject} from "rxjs";
 import {AxiosGateway, OnlyLatestFilteredCall} from "../app/glue/gateways";
 
-describe("AxiosGateway", ()=>{
+describe("AxiosGateway slow integration tests", ()=>{
 	describe("two call", ()=>{
 		it("each call sends its response", (done)=>{
 			let counter=0;
