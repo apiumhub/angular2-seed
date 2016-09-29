@@ -228,6 +228,27 @@ describe("first test", () => {
         		});
         	});
         });
+        describe("join", ()=>{
+        	describe("many subjects", ()=>{
+        		it("join them all", (done)=>{
+                    const subj1=new Subject<string>();
+                    const subj2=new Subject<string>();
+                    const subj3=new Subject<string>();
+                    const subjects: Observable<string>[] = [subj1, subj2, subj3];
+                    const finalObservable:Observable<string>=subjects.reduce((prev: Observable<string>, curr: Observable<string>)=>Observable.merge(prev, curr));
+                    let values: string[] = [];
+                    finalObservable.subscribe((value:string)=>{
+                        console.log(value);
+                        values.push(value);
+                    });
+                    subj1.next("A");
+                    subj2.next("B");
+                    subj3.next("C");
+                    expect(values.join()).to.eql("A,B,C");
+                    done();
+        		})
+        	})
+        });
     });
 
 });
