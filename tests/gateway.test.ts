@@ -3,6 +3,9 @@ import {Hero} from "../app/hero";
 import {expect} from "chai";
 import {Subject} from "rxjs";
 import {AxiosGateway, OnlyLatestFilteredCall} from "../app/glue/gateways";
+import * as sinon from "sinon";
+import SinonSpy = Sinon.SinonSpy;
+
 
 describe("AxiosGateway slow integration tests", ()=>{
 	describe("two call", ()=>{
@@ -35,6 +38,22 @@ describe("AxiosGateway slow integration tests", ()=>{
 					subj
 				)
 				pipeline.run("/heroes");
+				pipeline.run("/heroes");
+			});
+		});
+		describe("two subscriptions", ()=>{
+			it("they are both notified", (done) =>{
+				const server = new AxiosGateway();
+				const subj=new Subject<Hero[]>();
+				const pipeline=new OnlyLatestFilteredCall<Hero[]>(
+					(resource:string)=>server.get(resource)
+				)
+				const spy=sinon.spy()
+				pipeline.subscribe(spy);
+				pipeline.subscribe(()=>{
+					sinon.assert.calledOnce(spy);
+					done();
+				});
 				pipeline.run("/heroes");
 			});
 		});

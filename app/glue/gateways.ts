@@ -29,14 +29,19 @@ export class OnlyLatestFilteredCall<T>
     private continuousLoadPipeline:Subject<string>=new Subject<string>();
     private observable: ObservableInput<T>;
 
-    constructor(call: (value: string, index: number) => ObservableInput<T>, observer:Observer<T>){
+    constructor(call: (value: string, index: number) => ObservableInput<T>, observer?:Observer<T>){
         this.observable=this.continuousLoadPipeline
             .switchMap(call);
-        this.observable.subscribe(observer); //TODO: leaking subscription
+        if (observer) this.observable.subscribe(observer); //TODO: leaking subscription
     }
 
     run(resource:string) {
         this.continuousLoadPipeline.next(resource);
+    }
+
+    subscribe(cb: ((value: T) => void)) {
+        const obs=<Observable<T>> this.observable;
+        return obs.subscribe(cb);
     }
 }
 @Injectable()
