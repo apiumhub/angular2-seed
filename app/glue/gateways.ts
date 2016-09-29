@@ -24,40 +24,6 @@ export abstract class Server {
 }
 ;
 //endregion
-export interface IPipeline<T,V>
-{
-    run(resource:V):void;
-    subscribe(cb: ((value: T) => void)):Subscription;
-    asObservable():Observable<T>;
-}
-export interface IResourcePipeline<T> extends IPipeline<T,string>
-{
-}
-export class OnlyLatestFilteredCall<T> implements IResourcePipeline<T>
-{
-    private continuousLoadPipeline:Subject<string>=new Subject<string>();
-    private observable: ObservableInput<T>;
-
-    constructor(call: (value: string, index: number) => ObservableInput<T>, observer?:Observer<T>){
-        this.observable=this.continuousLoadPipeline
-            .switchMap(call);
-        if (observer) this.observable.subscribe(observer); //TODO: leaking subscription
-    }
-
-    run(resource:string) {
-        this.continuousLoadPipeline.next(resource);
-    }
-
-    subscribe(cb: ((value: T) => void)) {
-        const obs=<Observable<T>> this.observable;
-        return obs.subscribe(cb);
-    }
-
-    asObservable():Observable<T>
-    {
-        return <Observable<T>> <any> this;
-    }
-}
 @Injectable()
 export class AxiosGateway implements Server {
 
@@ -106,5 +72,44 @@ export class AxiosGateway implements Server {
 
     post<T>(resource: string, payload: T, observer: Observer<T>|null = null): Observable<T> {
         return this.manageResponse(this.request<T>(resource, 'post', payload), resource, observer);
+    }
+}
+export interface IPipeline<T,V>
+{
+    run(resource:V):void;
+    next(resource:V):void;
+    subscribe(cb: ((value: T) => void)):Subscription;
+    asObservable():Observable<T>;
+}
+export interface IResourcePipeline<T> extends IPipeline<T,string>
+{
+}
+export class OnlyLatestFilteredCall<T> implements IResourcePipeline<T>
+{
+    private continuousLoadPipeline:Subject<string>=new Subject<string>();
+    private observable: ObservableInput<T>;
+
+    constructor(call: (value: string, index: number) => ObservableInput<T>, observer?:Observer<T>){
+        this.observable=this.continuousLoadPipeline
+            .switchMap(call);
+        if (observer) this.observable.subscribe(observer); //TODO: leaking subscription
+    }
+
+    run(resource:string) {
+        this.continuousLoadPipeline.next(resource);
+    }
+
+    next(resource: string): void {
+        this.run(resource);
+    }
+
+    subscribe(cb: ((value: T) => void)) {
+        const obs=<Observable<T>> this.observable;
+        return obs.subscribe(cb);
+    }
+
+    asObservable():Observable<T>
+    {
+        return <Observable<T>> <any> this;
     }
 }
