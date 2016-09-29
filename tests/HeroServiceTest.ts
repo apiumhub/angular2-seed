@@ -20,13 +20,22 @@ describe("HeroService", () => {
 	beforeEach(() => {
 		sut=new HeroService(Server.local());
 	})
-	describe("called", () => {
+	describe("called via get", () => {
 		it("should get heroes from (fake) server", (done) => {
 			sut.heroes((heroes:Hero[]) => {
 				expect(heroes).to.eql(testHeroes);
 				done();
 			});
 			sut.loadHeroes();
+		});;
+	})
+	describe("called for continuous load", () => {
+		it("should get heroes from (fake) server", (done) => {
+			sut.heroes((heroes:Hero[]) => {
+				expect(heroes).to.eql(testHeroes);
+				done();
+			});
+			sut.continuouslyLoadHeroes();
 		});;
 	})
 	describe("post call", ()=>{

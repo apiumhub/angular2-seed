@@ -1,5 +1,6 @@
 import {Injectable, Optional} from "@angular/core";
-import {Observable, Subject} from "rxjs/Rx";
+import {Observable, Observer, Subject} from "rxjs/Rx";
+import {ObservableInput} from "rxjs/Observable";
 import "rxjs/observable/dom/ajax";
 import "rxjs/observable/fromPromise";
 import "rxjs/observable/defer";
@@ -28,15 +29,29 @@ export interface IHeroService
     loadHeroes():Observable<Hero[]>;
     heroes: SubscriptionFunction<Hero[]>;
 }
+class SequencedPipeline<T>
+{
+    private continuousLoadPipeline:Subject<string>=new Subject<string>();
+    private observable: ObservableInput<T>;
 
+    constructor(call: (value: string, index: number) => ObservableInput<T>, observer:Observer<T>){
+        this.observable=this.continuousLoadPipeline
+            .switchMap(call);
+        this.observable.subscribe(observer);
+    }
+
+    run(resource:string) {
+        this.continuousLoadPipeline.next(resource);
+    }
+}
 @Injectable()
 export class HeroService implements IHeroService{
     heroesRefreshed:Subject<Hero[]>
     heroes:SubscriptionFunction<Hero[]>
 
-    private continuousLoadHeroPipeline:Subject<string>=new Subject<string>();
-
     onHeroSaved:Subject<Hero>;
+
+    private continuousLoadHeroPipeline:SequencedPipeline<Hero[]>
     public savedHero:Function;
 
     constructor(@Optional() private server?:Server) {
@@ -45,9 +60,10 @@ export class HeroService implements IHeroService{
         this.heroes = newEvent(this.heroesRefreshed, "heroesRefreshed")
         this.onHeroSaved = new Subject<Hero>();
         this.savedHero = newEvent(this.onHeroSaved, "onHeroSaved")
-        this.continuousLoadHeroPipeline
-            .switchMap((resource)=>this.getServer().get(resource))
-            .subscribe(this.heroesRefreshed);
+        this.continuousLoadHeroPipeline=new SequencedPipeline<Hero[]>(
+            (resource:string)=>this.server.get(resource),
+            this.heroesRefreshed
+        )
     }
 
     protected getServer():Server
@@ -69,7 +85,7 @@ export class HeroService implements IHeroService{
     }
 
     continuouslyLoadHeroes():void {
-        this.continuousLoadHeroPipeline.next('heroes');
+        this.continuousLoadHeroPipeline.run('heroes');
     }
 }
 
