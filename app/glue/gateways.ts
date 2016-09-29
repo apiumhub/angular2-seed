@@ -24,7 +24,7 @@ export abstract class Server {
 }
 ;
 //endregion
-export class OnlyLatestFilterCall<T>
+export class OnlyLatestFilteredCall<T>
 {
     private continuousLoadPipeline:Subject<string>=new Subject<string>();
     private observable: ObservableInput<T>;
