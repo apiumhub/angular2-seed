@@ -44,7 +44,6 @@ describe("AxiosGateway slow integration tests", ()=>{
 		describe("two subscriptions", ()=>{
 			it("they are both notified", (done) =>{
 				const server = new AxiosGateway();
-				const subj=new Subject<Hero[]>();
 				const pipeline=new OnlyLatestFilteredCall<Hero[]>(
 					(resource:string)=>server.get(resource)
 				)
