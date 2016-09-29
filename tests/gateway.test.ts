@@ -2,7 +2,7 @@ import "reflect-metadata";
 import {Hero} from "../app/hero";
 import {expect} from "chai";
 import {Subject} from "rxjs";
-import {AxiosGateway, SequencedPipeline} from "../app/glue/gateways";
+import {AxiosGateway, OnlyLatestCallFilter} from "../app/glue/gateways";
 
 describe("AxiosGateway", ()=>{
 	describe("two call", ()=>{
@@ -30,7 +30,7 @@ describe("AxiosGateway", ()=>{
 					expect(counter).to.be.lte(1);
 					if (counter==1) setTimeout(()=>done(), 500);
 				})
-				const pipeline=new SequencedPipeline<Hero[]>(
+				const pipeline=new OnlyLatestCallFilter<Hero[]>(
 					(resource:string)=>server.get(resource),
 					subj
 				)

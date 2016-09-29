@@ -7,7 +7,7 @@ import "rxjs/operator/retry";
 import "rxjs/operator/merge";
 import {newEvent} from "./glue/newEvent";
 import {Hero} from "./hero";
-import {Server, SequencedPipeline} from "./glue/gateways";
+import {Server, OnlyLatestCallFilter} from "./glue/gateways";
 import {SubscriptionFunction} from "./glue/global";
 
 
@@ -36,7 +36,7 @@ export class HeroService implements IHeroService{
 
     onHeroSaved:Subject<Hero>;
 
-    private continuousLoadHeroPipeline:SequencedPipeline<Hero[]>
+    private continuousLoadHeroPipeline:OnlyLatestCallFilter<Hero[]>
     public savedHero:Function;
 
     constructor(@Optional() private server?:Server) {
@@ -45,7 +45,7 @@ export class HeroService implements IHeroService{
         this.heroes = newEvent(this.heroesRefreshed, "heroesRefreshed")
         this.onHeroSaved = new Subject<Hero>();
         this.savedHero = newEvent(this.onHeroSaved, "onHeroSaved")
-        this.continuousLoadHeroPipeline=new SequencedPipeline<Hero[]>(
+        this.continuousLoadHeroPipeline=new OnlyLatestCallFilter<Hero[]>(
             (resource:string)=>this.server.get(resource),
             this.heroesRefreshed
         )
