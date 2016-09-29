@@ -3,13 +3,13 @@
  */
 import {Injectable} from "@angular/core";
 import {Observable, Subject} from "rxjs/Rx";
+import {ObservableInput} from "rxjs/Observable";
 import "rxjs/add/observable/dom/ajax";
 import "rxjs/add/observable/fromPromise";
 import "rxjs/add/observable/defer";
 import "rxjs/add/operator/retry";
 import {Observer} from "rxjs/Observer";
 import axios from "axios";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 //region: using type merging:
 export interface Server {
@@ -24,6 +24,21 @@ export abstract class Server {
 }
 ;
 //endregion
+export class SequencedPipeline<T>
+{
+    private continuousLoadPipeline:Subject<string>=new Subject<string>();
+    private observable: ObservableInput<T>;
+
+    constructor(call: (value: string, index: number) => ObservableInput<T>, observer:Observer<T>){
+        this.observable=this.continuousLoadPipeline
+            .switchMap(call);
+        this.observable.subscribe(observer); //TODO: leaking subscription
+    }
+
+    run(resource:string) {
+        this.continuousLoadPipeline.next(resource);
+    }
+}
 @Injectable()
 export class AxiosGateway implements Server {
 
