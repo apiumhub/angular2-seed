@@ -24,13 +24,16 @@ export abstract class Server {
 }
 ;
 //endregion
-export interface IPipeline<T>
+export interface IPipeline<T,V>
 {
-    run(resource:string):void;
+    run(resource:V):void;
     subscribe(cb: ((value: T) => void)):Subscription;
     asObservable():Observable<T>;
 }
-export class OnlyLatestFilteredCall<T> implements IPipeline<T>
+export interface IResourcePipeline<T> extends IPipeline<T,string>
+{
+}
+export class OnlyLatestFilteredCall<T> implements IResourcePipeline<T>
 {
     private continuousLoadPipeline:Subject<string>=new Subject<string>();
     private observable: ObservableInput<T>;
