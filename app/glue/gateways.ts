@@ -28,6 +28,7 @@ export interface IPipeline<T>
 {
     run(resource:string):void;
     subscribe(cb: ((value: T) => void)):Subscription;
+    asObservable():Observable<T>;
 }
 export class OnlyLatestFilteredCall<T> implements IPipeline<T>
 {
@@ -47,6 +48,11 @@ export class OnlyLatestFilteredCall<T> implements IPipeline<T>
     subscribe(cb: ((value: T) => void)) {
         const obs=<Observable<T>> this.observable;
         return obs.subscribe(cb);
+    }
+
+    asObservable():Observable<T>
+    {
+        return <Observable<T>> <any> this;
     }
 }
 @Injectable()
