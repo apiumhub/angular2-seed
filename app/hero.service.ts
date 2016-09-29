@@ -34,7 +34,7 @@ export class HeroService implements IHeroService{
     heroesRefreshed:Subject<Hero[]>
     heroes:SubscriptionFunction<Hero[]>
 
-    //private server: Server;
+    private continuousLoadHeroPipeline:Subject<string>=new Subject<string>();
 
     onHeroSaved:Subject<Hero>;
     public savedHero:Function;
@@ -45,6 +45,9 @@ export class HeroService implements IHeroService{
         this.heroes = newEvent(this.heroesRefreshed, "heroesRefreshed")
         this.onHeroSaved = new Subject<Hero>();
         this.savedHero = newEvent(this.onHeroSaved, "onHeroSaved")
+        this.continuousLoadHeroPipeline
+            .switchMap((resource)=>this.getServer().get(resource))
+            .subscribe(this.heroesRefreshed);
     }
 
     protected getServer():Server
@@ -65,14 +68,8 @@ export class HeroService implements IHeroService{
         return this.getServer().get('/heroes', this.heroesRefreshed);
     }
 
-    private continuousLoadHeroPipeline:Subject<Hero[]>=new Subject<Hero[]>();
     continuouslyLoadHeroes():void {
-        //region could be made in constructor
-        this.continuousLoadHeroPipeline
-            .switchMap(()=>this.getServer().get('/heroes'))
-            .subscribe(this.heroesRefreshed);
-        //endregion
-        this.continuousLoadHeroPipeline.next([]);
+        this.continuousLoadHeroPipeline.next('heroes');
     }
 }
 
