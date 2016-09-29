@@ -26,15 +26,12 @@ export abstract class Server {
 //endregion
 @Injectable()
 export class AxiosGateway implements Server {
-    private api: Subject<string>
 
     constructor(private serverHost = 'http://localhost:3004/') {
-        this.api = new BehaviorSubject<string>('/');
     }
 
 
     private request<T>(resource: string, method: string, data: T|null = null, headers: any = {'X-Custom-Header': 'foobar'}): Observable<T> {
-        this.api.next(resource);
         var config: any = {
             baseURL: this.serverHost,
             timeout: 1000,
@@ -43,43 +40,37 @@ export class AxiosGateway implements Server {
             url: resource,
             data: data
         };
-        return this.api
-            .do((resource) => console.log("calling resource [", resource, "] of server: [", this.serverHost, "]"))
-            .flatMap(() => {
-                return Observable.fromPromise(axios.request(config))
-            })
-            .retry(3)
-            .do((resp:any) => {
-                console.log("returned from call for resource: ", resource, JSON.stringify(resp.data));
-            })
-            .map((resp:any) => resp.data);
+        console.log("calling resource [", resource, "] of server: [", this.serverHost, "]");
+        return Observable
+                    .fromPromise(axios.request(config))
+                    .retry(3)
+                    .do((resp: any) => {
+                        console.log("returned from call for resource: ", resource, JSON.stringify(resp.data));
+                    })
+                    .map((resp: any) => resp.data);
     }
 
     private manageResponse<T>(observable: Observable<T>, resource: string, observer: Observer<T>|null): Observable<T> {
         if (observer) {
             observable.first().subscribe(
-                (value: T)=>{
+                (value: T)=> {
                     observer.next(value);
                 },
                 (error: any) => {
                     console.error("call to: ", resource, "failed:", error);
                     observer.error(error);
-                },
-                () => {
-                    console.log("call to: ", resource, 'Completed')
-                    observer.complete();
                 }
             );
         }
         return observable;
     }
 
-    get<T>(resource: string, observer: Observer<T>|null=null): Observable<T> {
+    get<T>(resource: string, observer: Observer<T>|null = null): Observable<T> {
         return this.manageResponse(this.request<T>(resource, 'get'), resource, observer);
     }
 
 
-    post<T>(resource: string, payload: T, observer: Observer<T>|null=null): Observable<T> {
+    post<T>(resource: string, payload: T, observer: Observer<T>|null = null): Observable<T> {
         return this.manageResponse(this.request<T>(resource, 'post', payload), resource, observer);
     }
 }
