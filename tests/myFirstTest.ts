@@ -207,9 +207,8 @@ describe("first test", () => {
         			it("replays initial value", function(done)
         			{
                         const subject = new BehaviorSubject("A");
-                        subject.subscribe((value)=>{
-                            expect(value).to.
-                            eql("A");
+                        subject.first().subscribe((value)=>{
+                            expect(value).to.eql("A");
                             done();
                         });
                         subject.next("B");
@@ -221,7 +220,7 @@ describe("first test", () => {
         	describe("has initial value", ()=>{
         		it("should NOT replay initial value", (done) =>{
                     const subject = new Subject<string>();
-                    subject.subscribe((value:string)=>{
+                    subject.first().subscribe((value:string)=>{
                         expect(value).to.not.eql("A");
                         done();
                     });
