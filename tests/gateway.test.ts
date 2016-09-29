@@ -1,9 +1,8 @@
 import "reflect-metadata";
-import {HeroService} from "../app/hero.service";
 import {Hero} from "../app/hero";
 import {expect} from "chai";
-import {Subject} from 'rxjs'
-import {Server, AxiosGateway} from "../app/glue/gateways";
+import {Subject} from "rxjs";
+import {AxiosGateway, SequencedPipeline} from "../app/glue/gateways";
 
 describe("AxiosGateway", ()=>{
 	describe("two call", ()=>{
@@ -20,4 +19,24 @@ describe("AxiosGateway", ()=>{
 			server.get("/heroes", subj);
 		})
 	})
+	describe("used with sequenced pipeline", ()=>{
+		describe("done two calls", ()=>{
+			it("just the second one responds", (done) =>{
+				let counter=0;
+				const server = new AxiosGateway();
+				const subj=new Subject<Hero[]>();
+				subj.subscribe(()=>{
+					counter++;
+					expect(counter).to.be.lte(1);
+					if (counter==1) setTimeout(()=>done(), 500);
+				})
+				const pipeline=new SequencedPipeline<Hero[]>(
+					(resource:string)=>server.get(resource),
+					subj
+				)
+				pipeline.run("/heroes");
+				pipeline.run("/heroes");
+			});
+		});
+	});
 });
