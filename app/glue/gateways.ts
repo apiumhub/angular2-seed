@@ -57,20 +57,17 @@ export class AxiosGateway implements Server {
 
     private manageResponse<T>(observable: Observable<T>, resource: string, observer: Observer<T>|null): Observable<T> {
         if (observer) {
-            const subscrition = observable.subscribe(
+            observable.first().subscribe(
                 (value: T)=>{
                     observer.next(value);
-                    subscrition.unsubscribe();
                 },
                 (error: any) => {
                     console.error("call to: ", resource, "failed:", error);
                     observer.error(error);
-                    subscrition.unsubscribe();
                 },
                 () => {
                     console.log("call to: ", resource, 'Completed')
                     observer.complete();
-                    subscrition.unsubscribe();
                 }
             );
         }
