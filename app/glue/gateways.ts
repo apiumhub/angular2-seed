@@ -31,7 +31,7 @@ export class AxiosGateway implements Server {
     }
 
 
-    private request<T>(resource: string, method: string, data: T|null = null, headers: any = {'X-Custom-Header': 'foobar'}): Observable<T> {
+    private request<T>(resource: string, method: string, data: T|null = null, headers: any = {'X-Custom-Header': 'foobar'}): [Observable<T>,any] {
         var config: any = {
             baseURL: this.serverHost,
             timeout: 1000,
@@ -41,16 +41,19 @@ export class AxiosGateway implements Server {
             data: data
         };
         console.log("calling resource [", resource, "] of server: [", this.serverHost, "]");
-        return Observable
-                    .fromPromise(axios.request(config))
+        const promise=axios.request(config);
+        return [Observable
+                    .fromPromise(promise)
                     .retry(3)
                     .do((resp: any) => {
                         console.log("returned from call for resource: ", resource, JSON.stringify(resp.data));
                     })
-                    .map((resp: any) => resp.data);
+                    .map((resp: any) => resp.data), promise];
     }
 
-    private manageResponse<T>(observable: Observable<T>, resource: string, observer: Observer<T>|null): Observable<T> {
+    private manageResponse<T>(tuple:[Observable<T>, any], resource: string, observer: Observer<T>|null): Observable<T> {
+        const observable:Observable<T> = tuple[0];
+        const promise = tuple[1];
         if (observer) {
             observable.first().subscribe(
                 (value: T)=> {
@@ -59,7 +62,8 @@ export class AxiosGateway implements Server {
                 (error: any) => {
                     console.error("call to: ", resource, "failed:", error);
                     observer.error(error);
-                }
+                },
+                () => {if (promise.abort) promise.abort();} //TODO: axio does not abort promise
             );
         }
         return observable;
