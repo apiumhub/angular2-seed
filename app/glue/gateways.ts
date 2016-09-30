@@ -92,7 +92,10 @@ export class OnlyLatestFilteredCall<T> implements IResourcePipeline<T>
     constructor(call: (value: string, index: number) => ObservableInput<T>, observer?:Observer<T>){
         this.observable=this.continuousLoadPipeline
             .switchMap(call);
-        if (observer) this.observable.subscribe(observer); //TODO: leaking subscription
+        if (observer) {
+            let obs=<Observable<T>> this.observable;
+            obs.subscribe(observer); //TODO: leaking subscription
+        }
     }
 
     run(resource:string) {
