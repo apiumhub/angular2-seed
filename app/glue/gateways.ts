@@ -27,7 +27,7 @@ export abstract class Server {
 @Injectable()
 export class AxiosGateway implements Server {
 
-    constructor(private serverHost = 'http://localhost:3004/') {
+    constructor(private serverHost:string = 'http://localhost:3004/') {
     }
 
 
