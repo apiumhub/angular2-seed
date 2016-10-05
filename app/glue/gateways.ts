@@ -80,12 +80,15 @@ export class AxiosGateway implements Server {
 }
 export interface IPipeline<T,V>
 {
-    run(resource:V):void;
-    next(resource:V):void;
     subscribe(cb: ((value: T) => void)):Subscription;
     asObservable():Observable<T>;
 }
-export interface IResourcePipeline<T> extends IPipeline<T,string>
+export interface IObserverPipeline<T,V> extends IPipeline<T,V>
+{
+    run(resource:V):void;
+    next(resource:V):void;
+}
+export interface IResourcePipeline<T> extends IObserverPipeline<T,string>
 {
 }
 export class OnlyLatestFilteredCall<T> implements IResourcePipeline<T>
