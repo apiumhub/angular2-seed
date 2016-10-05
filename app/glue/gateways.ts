@@ -78,17 +78,17 @@ export class AxiosGateway implements Server {
         return this.manageResponse(this.request<T>(resource, 'post', payload), resource, observer);
     }
 }
-export interface IPipeline<T,V>
+export interface IObservablePipeline<T,V>
 {
     subscribe(cb: ((value: T) => void)):Subscription;
     asObservable():Observable<T>;
 }
-export interface IObserverPipeline<T,V> extends IPipeline<T,V>
+export interface IObserverPipeline<T,V>
 {
     run(resource:V):void;
     next(resource:V):void;
 }
-export interface IResourcePipeline<T> extends IObserverPipeline<T,string>
+export interface IResourcePipeline<T> extends IObservablePipeline<T,string>, IObserverPipeline<T,string>
 {
 }
 export class OnlyLatestFilteredCall<T> implements IResourcePipeline<T>
