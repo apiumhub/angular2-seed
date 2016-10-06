@@ -276,8 +276,8 @@ describe("first test", () => {
                     expect(value).to.eql("hola websocket 2");
                     done();
                 });
-                websocket.send(()=>"hola websocket 1");
-                setTimeout(()=>websocket.send(()=>"hola websocket 2"), 500);
+                websocket.next("hola websocket 1");
+                setTimeout(()=>websocket.next("hola websocket 2"), 500);
             });
         });
     });

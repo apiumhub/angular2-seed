@@ -124,7 +124,8 @@ export class OnlyLatestFilteredCall<T> implements IResourcePipeline<T>
     }
 }
 
-export class WebSocketSubject<T> implements IObservablePipeline<T,string> {
+export class WebSocketSubject<T> implements IResourcePipeline<T> {
+
     private websocket: WebSocket;
     private obs: Observable<{}>;
     private open: boolean = false;
@@ -152,6 +153,14 @@ export class WebSocketSubject<T> implements IObservablePipeline<T,string> {
             return;
         }
         this.websocket.send(message());
+    }
+
+    run(resource: string): void {
+        this.send(()=>resource);
+    }
+
+    next(resource: string): void {
+        this.send(()=>resource);
     }
 
     asObservable<T>(): Observable<T> {
