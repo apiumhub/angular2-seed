@@ -123,3 +123,38 @@ export class OnlyLatestFilteredCall<T> implements IResourcePipeline<T>
         return <Observable<T>> <any> this;
     }
 }
+
+export class WebSocketSubject<T> implements IObservablePipeline<T,string> {
+    private websocket: WebSocket;
+    private obs: Observable<{}>;
+    private open: boolean = false;
+    private toBeSent: Function[] = [];
+
+    constructor(url: string) {
+        this.websocket = new WebSocket(url);
+        this.obs = Observable.fromEvent(this.websocket, "message")
+            .map((event: any)=>event.data);
+        this.websocket.onopen = (ev: Event)=> {
+            console.log("websocket to [", url, "] opened!");
+            this.open = true;
+            this.toBeSent.map((cb: ()=>string)=>this.websocket.send(cb()));
+        }
+    }
+
+    subscribe(cb: (value: any)=>void) {
+        return this.obs.subscribe(cb);
+    }
+
+    send(message: ()=>string): void {
+        console.log("sending through ws: ", message());
+        if (this.open == false) {
+            this.toBeSent.push(message);
+            return;
+        }
+        this.websocket.send(message());
+    }
+
+    asObservable<T>(): Observable<T> {
+        return <Observable<T>>this.obs;
+    }
+}

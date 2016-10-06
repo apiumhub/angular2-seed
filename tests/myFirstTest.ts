@@ -5,6 +5,7 @@ import {StringKeyedMap, changePropertyMap, appendToProperty, changeProperty, map
 import "rxjs/add/observable/dom/webSocket";
 import "rxjs/add/observable/fromPromise";
 import axios from "axios";
+import {WebSocketSubject} from "../app/glue/gateways";
 import arrayContaining = jasmine.arrayContaining;
 
 describe("first test", () => {
@@ -262,43 +263,10 @@ describe("first test", () => {
                 subj.next("hola");
             });
         });
-        class WebSocketSubject {
-            private websocket: WebSocket;
-            private obs: Observable<{}>;
-            private open: boolean = false;
-            private toBeSent: Function[] = [];
-
-            constructor(url: string) {
-                this.websocket = new WebSocket(url);
-                this.obs = Observable.fromEvent(this.websocket, "message")
-                    .map((event: any)=>event.data);
-                this.websocket.onopen = (ev: Event)=> {
-                    console.log("websocket to [", url, "] opened!");
-                    this.open = true;
-                    this.toBeSent.map((cb: ()=>string)=>this.websocket.send(cb()));
-                }
-            }
-
-            subscribe(cb: (value: any)=>void) {
-                this.obs.subscribe(cb);
-            }
-
-            send(message: ()=>string): void {
-                if (this.open == false) {
-                    this.toBeSent.push(message);
-                    return;
-                }
-                this.websocket.send(message());
-            }
-
-            asObservable<T>(): Observable<T> {
-                return <Observable<T>>this.obs;
-            }
-        }
         describe("slow integration test: connected to websocket", ()=> {
             it("should generate a stream", (done) => {
                 if (!WebSocket) done();
-                const websocket = new WebSocketSubject("ws://echo.websocket.org/");
+                const websocket = new WebSocketSubject<string>("ws://echo.websocket.org/");
                 websocket.asObservable().first().subscribe((value: any)=> {
                     console.log(value);
                     expect(value).to.eql("hola websocket 1");
