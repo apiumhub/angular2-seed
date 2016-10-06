@@ -2,10 +2,10 @@ import {Hero} from "../app/hero";
 import {Subject, Observable, BehaviorSubject} from "rxjs/Rx";
 import {expect} from "chai";
 import {StringKeyedMap, changePropertyMap, appendToProperty, changeProperty, mapFromDTO} from "../app/glue/global";
+import "rxjs/add/observable/dom/webSocket";
 import "rxjs/add/observable/fromPromise";
 import axios from "axios";
 import arrayContaining = jasmine.arrayContaining;
-
 
 describe("first test", () => {
     it('has name', () => {
@@ -260,6 +260,19 @@ describe("first test", () => {
                 hotObs.refCount();
                 hotObs.connect(); //internally a subscribe
                 subj.next("hola");
+            });
+        });
+        describe("connected to websocket", ()=> {
+            it("should generate a stream", (done) => {
+                if (!WebSocket) done();
+                const websocket=new WebSocket("ws://echo.websocket.org/");
+                const obs=Observable.fromEvent(websocket, "message");
+                obs.map((event:any)=>event.data).subscribe((value:any)=>{
+                    console.log(value);
+                    expect(value).to.eql("hola websocket");
+                    done();
+                })
+                websocket.onopen=(ev:Event)=>websocket.send("hola websocket");
             });
         });
     });
