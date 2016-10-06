@@ -273,7 +273,7 @@ describe("first test", () => {
                 websocket.asObservable().first().subscribe((value: any)=> {
                     console.log(value);
                     expect(value).to.eql("hola websocket 1");
-                });
+                }, (err:any)=>console.error("Error ws:"+err.message));
                 websocket.asObservable().elementAt(1).subscribe((value: any)=> {
                     console.log(value);
                     expect(value).to.eql("hola websocket 2");

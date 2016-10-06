@@ -133,8 +133,16 @@ export class WebSocketSubject<T> implements IResourcePipeline<T> {
 
     constructor(url: string) {
         this.websocket = new WebSocket(url);
-        this.obs = Observable.fromEvent(this.websocket, "message")
-            .map((event: any)=>event.data);
+        this.obs = Observable.create((observer:Observer<T>) =>{
+            this.websocket.onmessage = observer.next.bind(observer);
+            this.websocket.onerror = (error:any) => {
+                console.error("websocket error: ",error);
+                observer.error(error);
+            }
+            this.websocket.onclose=observer.complete.bind(observer);
+            return observer;
+        })
+        .map((event: any)=>event.data);
         this.websocket.onopen = (ev: Event)=> {
             console.log("websocket to [", url, "] opened!");
             this.open = true;
