@@ -256,8 +256,9 @@ describe("first test", () => {
                     console.log(value);
                     expect(value).to.eql("hola");
                     done();
-                }).publish();
-                obs.connect();
+                }).publish(); //creates a new ConnectableObservable
+                obs.refCount();
+                obs.connect(); //internally a subscribe
                 subj.next("hola");
         	});
         });
