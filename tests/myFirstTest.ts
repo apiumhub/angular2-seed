@@ -265,7 +265,7 @@ describe("first test", () => {
         });
         describe("slow integration test: connected to websocket", ()=> {
             it("should generate a stream", (done) => {
-                if (!WebSocket) done();
+                if (typeof(WebSocket)=="undefined") done();
                 const websocket = new WebSocketSubject<string>("ws://echo.websocket.org/");
                 websocket.asObservable().first().subscribe((value: any)=> {
                     console.log(value);
