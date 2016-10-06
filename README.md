@@ -9,6 +9,9 @@ To continuously compile, in unit tests, either:
 ** tell to use config from tsconfig.json
 ** set up a typescript file watcher
 
+To make the IDE give suggestions in TS:
+* *Settings->Javascript->Libraries->Add (node_modules)
+
 To continuously compile, in the app:
 * *npm start*
 
