@@ -265,58 +265,52 @@ describe("first test", () => {
         class WebSocketSubject {
             private websocket: WebSocket;
             private obs: Observable<{}>;
-            private open:boolean=false;
-            private toBeSent:Function[]=[];
+            private open: boolean = false;
+            private toBeSent: Function[] = [];
 
             constructor(url: string) {
                 this.websocket = new WebSocket(url);
-                this.obs = Observable.fromEvent(this.websocket, "message");
-                this.websocket.onopen = (ev: Event)=>
-                {
-                    console.log("websocket to [",url,"] opened!");
-                    this.open=true;
-                    this.toBeSent.map((cb:()=>string)=>this.websocket.send(cb()));
+                this.obs = Observable.fromEvent(this.websocket, "message")
+                    .map((event: any)=>event.data);
+                this.websocket.onopen = (ev: Event)=> {
+                    console.log("websocket to [", url, "] opened!");
+                    this.open = true;
+                    this.toBeSent.map((cb: ()=>string)=>this.websocket.send(cb()));
                 }
-                //obs.map((event:any)=>event.data).subscribe((value:any)=>{
             }
 
             subscribe(cb: (value: any)=>void) {
-                this.obs.map((event: any)=>event.data).subscribe(cb);
+                this.obs.subscribe(cb);
             }
 
-            send(message: ()=>string):void {
-                if (this.open==false)
-                {
+            send(message: ()=>string): void {
+                if (this.open == false) {
                     this.toBeSent.push(message);
                     return;
                 }
                 this.websocket.send(message());
             }
-            asObservable<T>():Observable<T>{
+
+            asObservable<T>(): Observable<T> {
                 return <Observable<T>>this.obs;
             }
         }
-        describe("connected to websocket", ()=> {
+        describe("slow integration test: connected to websocket", ()=> {
             it("should generate a stream", (done) => {
                 if (!WebSocket) done();
                 const websocket = new WebSocketSubject("ws://echo.websocket.org/");
-                var counter=0;
-                websocket.subscribe((value: any)=> {
+                websocket.asObservable().first().subscribe((value: any)=> {
                     console.log(value);
-                    counter++;
-                    if (counter==1)
-                    {
-                        expect(value).to.eql("hola websocket 1");
-                    }
-                    if (counter==2) {
-                        expect(value).to.eql("hola websocket 2");
-                        done();
-                    }
+                    expect(value).to.eql("hola websocket 1");
+                });
+                websocket.asObservable().elementAt(1).subscribe((value: any)=> {
+                    console.log(value);
+                    expect(value).to.eql("hola websocket 2");
+                    done();
                 });
                 websocket.send(()=>"hola websocket 1");
                 setTimeout(()=>websocket.send(()=>"hola websocket 2"), 500);
             });
         });
     });
-
 });
