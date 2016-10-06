@@ -263,9 +263,12 @@ describe("first test", () => {
                 subj.next("hola");
             });
         });
+        var doNotRunOnNode = function (done:()=>void) {
+            if (typeof(WebSocket) == "undefined") done();
+        };
         describe("slow integration test: connected to websocket", ()=> {
             it("should generate a stream", (done) => {
-                if (typeof(WebSocket)=="undefined") done();
+                doNotRunOnNode(done);
                 const websocket = new WebSocketSubject<string>("ws://echo.websocket.org/");
                 websocket.asObservable().first().subscribe((value: any)=> {
                     console.log(value);
