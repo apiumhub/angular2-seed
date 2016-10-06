@@ -27,7 +27,7 @@ export abstract class Server {
 @Injectable()
 export class AxiosGateway implements Server {
 
-    constructor(private serverHost:string = 'http://localhost:3004/') {
+    constructor(private serverHost: string = 'http://localhost:3004/') {
     }
 
 
@@ -41,18 +41,18 @@ export class AxiosGateway implements Server {
             data: data
         };
         console.log("calling resource [", resource, "] of server: [", this.serverHost, "]");
-        const promise=axios.request(config);
+        const promise = axios.request(config);
         return [Observable
-                    .fromPromise(promise)
-                    .retry(3)
-                    .do((resp: any) => {
-                        console.log("returned from call for resource: ", resource, JSON.stringify(resp.data));
-                    })
-                    .map((resp: any) => resp.data), promise];
+            .fromPromise(promise)
+            .retry(3)
+            .do((resp: any) => {
+                console.log("returned from call for resource: ", resource, JSON.stringify(resp.data));
+            })
+            .map((resp: any) => resp.data), promise];
     }
 
-    private manageResponse<T>(tuple:[Observable<T>, any], resource: string, observer: Observer<T>|null): Observable<T> {
-        const observable:Observable<T> = tuple[0];
+    private manageResponse<T>(tuple: [Observable<T>, any], resource: string, observer: Observer<T>|null): Observable<T> {
+        const observable: Observable<T> = tuple[0];
         const promise = tuple[1];
         if (observer) {
             observable.first().subscribe(
@@ -63,7 +63,9 @@ export class AxiosGateway implements Server {
                     console.error("call to: ", resource, "failed:", error);
                     observer.error(error);
                 },
-                () => {if (promise.abort) promise.abort();} //TODO: axio does not abort promise
+                () => {
+                    if (promise.abort) promise.abort();
+                } //TODO: axio does not abort promise
             );
         }
         return observable;
@@ -78,34 +80,30 @@ export class AxiosGateway implements Server {
         return this.manageResponse(this.request<T>(resource, 'post', payload), resource, observer);
     }
 }
-export interface IObservablePipeline<T,V>
-{
-    subscribe(cb: ((value: T) => void)):Subscription;
-    asObservable():Observable<T>;
+export interface IObservablePipeline<T,V> {
+    subscribe(cb: ((value: T) => void)): Subscription;
+    asObservable(): Observable<T>;
 }
-export interface IObserverPipeline<T,V>
-{
-    run(resource:V):void;
-    next(resource:V):void;
+export interface IObserverPipeline<T,V> {
+    run(resource: V): void;
+    next(resource: V): void;
 }
-export interface IResourcePipeline<T> extends IObservablePipeline<T,string>, IObserverPipeline<T,string>
-{
+export interface IResourcePipeline<T> extends IObservablePipeline<T,string>, IObserverPipeline<T,string> {
 }
-export class OnlyLatestFilteredCall<T> implements IResourcePipeline<T>
-{
-    private continuousLoadPipeline:Subject<string>=new Subject<string>();
+export class OnlyLatestFilteredCall<T> implements IResourcePipeline<T> {
+    private continuousLoadPipeline: Subject<string> = new Subject<string>();
     private observable: ObservableInput<T>;
 
-    constructor(call: (value: string, index: number) => ObservableInput<T>, observer?:Observer<T>){
-        this.observable=this.continuousLoadPipeline
+    constructor(call: (value: string, index: number) => ObservableInput<T>, observer?: Observer<T>) {
+        this.observable = this.continuousLoadPipeline
             .switchMap(call);
         if (observer) {
-            let obs=<Observable<T>> this.observable;
+            let obs = <Observable<T>> this.observable;
             obs.subscribe(observer); //TODO: leaking subscription
         }
     }
 
-    run(resource:string) {
+    run(resource: string) {
         this.continuousLoadPipeline.next(resource);
     }
 
@@ -114,12 +112,11 @@ export class OnlyLatestFilteredCall<T> implements IResourcePipeline<T>
     }
 
     subscribe(cb: ((value: T) => void)) {
-        const obs=<Observable<T>> this.observable;
+        const obs = <Observable<T>> this.observable;
         return obs.subscribe(cb);
     }
 
-    asObservable():Observable<T>
-    {
+    asObservable(): Observable<T> {
         return <Observable<T>> <any> this;
     }
 }
@@ -133,16 +130,17 @@ export class WebSocketSubject<T> implements IResourcePipeline<T> {
 
     constructor(url: string) {
         this.websocket = new WebSocket(url);
-        this.obs = Observable.create((observer:Observer<T>) =>{
+        this.obs = Observable.create((observer: Observer<T>) => {
             this.websocket.onmessage = observer.next.bind(observer);
-            this.websocket.onerror = (error:any) => {
-                console.error("websocket error: ",error);
+            const errorCb = (error: any) => {
+                console.error("websocket error: ", error);
                 observer.error(error);
             }
-            this.websocket.onclose=observer.complete.bind(observer);
+            this.websocket.onerror = errorCb;
+            this.websocket.onclose = errorCb;
             return observer;
         })
-        .map((event: any)=>event.data);
+            .map((event: any)=>event.data);
         this.websocket.onopen = (ev: Event)=> {
             console.log("websocket to [", url, "] opened!");
             this.open = true;
