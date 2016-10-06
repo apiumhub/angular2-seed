@@ -252,7 +252,7 @@ describe("first test", () => {
         describe("hot observable", ()=>{
         	it("should run map even if not subscribed (are lazy)", (done) =>{
         		const subj=new Subject<string>();
-        		const obs=subj.share().do((value:string)=>{
+        		const obs=subj.do((value:string)=>{
                     console.log(value);
                     expect(value).to.eql("hola");
                     done();
