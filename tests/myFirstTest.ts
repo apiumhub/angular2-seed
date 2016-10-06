@@ -1,10 +1,10 @@
 import {Hero} from "../app/hero";
-import {Subject, Observable, BehaviorSubject, AsyncSubject, ReplaySubject} from "rxjs/Rx";
+import {Subject, Observable, BehaviorSubject} from "rxjs/Rx";
 import {expect} from "chai";
 import {StringKeyedMap, changePropertyMap, appendToProperty, changeProperty, mapFromDTO} from "../app/glue/global";
-import arrayContaining = jasmine.arrayContaining;
 import "rxjs/add/observable/fromPromise";
 import axios from "axios";
+import arrayContaining = jasmine.arrayContaining;
 
 
 describe("first test", () => {
@@ -248,6 +248,18 @@ describe("first test", () => {
                     done();
         		})
         	})
+        });
+        describe("hot observable", ()=>{
+        	it("should run map even if not subscribed", (done) =>{
+        		const subj=new Subject<string>();
+        		const obs=subj.map((value:string)=>{
+                    console.log(value);
+                    expect(value).to.eql("hola");
+                    done();
+                });
+                obs.subscribe();
+                subj.next("hola");
+        	});
         });
     });
 
