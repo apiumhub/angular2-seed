@@ -145,6 +145,7 @@ export class WebSocketSubject<T> implements IResourcePipeline<T> {
             console.log("websocket to [", url, "] opened!");
             this.open = true;
             this.toBeSent.map((cb: ()=>string)=>this.websocket.send(cb()));
+            this.toBeSent=[];
         }
     }
 
