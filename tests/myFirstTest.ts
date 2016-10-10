@@ -1,5 +1,5 @@
 import {Hero} from "../app/hero";
-import {Subject, Observable, BehaviorSubject} from "rxjs/Rx";
+import {Subject, Observable, BehaviorSubject, Observer} from "rxjs/Rx";
 import {expect} from "chai";
 import {StringKeyedMap, changePropertyMap, appendToProperty, changeProperty, mapFromDTO} from "../app/glue/global";
 import "rxjs/add/observable/dom/webSocket";
@@ -7,6 +7,7 @@ import "rxjs/add/observable/fromPromise";
 import axios from "axios";
 import {WebSocketSubject} from "../app/glue/gateways";
 import arrayContaining = jasmine.arrayContaining;
+
 
 describe("first test", () => {
     it('has name', () => {
@@ -263,7 +264,7 @@ describe("first test", () => {
                 subj.next("hola");
             });
         });
-        var doNotRunOnNode = function (done:()=>void) {
+        var doNotRunOnNode = function (done: ()=>void) {
             if (typeof(WebSocket) == "undefined") done();
         };
         describe("slow integration test: connected to websocket", ()=> {
@@ -273,7 +274,7 @@ describe("first test", () => {
                 websocket.asObservable().first().subscribe((value: any)=> {
                     console.log(value);
                     expect(value).to.eql("hola websocket 1");
-                }, (err:any)=>console.error("Error ws:"+err.message));
+                }, (err: any)=>console.error("Error ws:" + err.message));
                 websocket.asObservable().elementAt(1).subscribe((value: any)=> {
                     console.log(value);
                     expect(value).to.eql("hola websocket 2");
@@ -281,6 +282,36 @@ describe("first test", () => {
                 });
                 websocket.next("hola websocket 1");
                 setTimeout(()=>websocket.next("hola websocket 2"), 500);
+            });
+        });
+        describe("a from-event like syntax, declarative", ()=> {
+            describe("from a normal object", ()=> {
+                it("should work", (done) => {
+                    class AClass {
+                        private obs: Observable<string>;
+
+                        aMethod(aValue: string) {
+                        }
+
+                        subscribe(cb: ((value: string) => void)) {
+                            return this.obs.subscribe(cb);
+                        }
+
+                        constructor() {
+                            this.obs = Observable.create((observer: Observer<string>)=> {
+                                this.aMethod = observer.next.bind(observer);
+                            });
+                        }
+
+                    };
+
+                    const instance = new AClass();
+                    instance.subscribe((value:string)=>{
+                        console.log(value);
+                        done();
+                    })
+                    instance.aMethod("aValue");
+                });
             });
         });
     });
