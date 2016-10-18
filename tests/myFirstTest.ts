@@ -320,8 +320,8 @@ describe("first test", () => {
             describe("called map", ()=> {
                 it("it should mantain the new state", (done) => {
                     const subj = new BehaviorSubject<string>("first value");
-                    subj.scan((value: string, newValue: string)=>newValue, "zero value")
-                        .skip(1)
+                    subj.skip(1)
+                        .scan((value: string, newValue: string)=>newValue, "zero value")
                         .subscribe((value: string)=> {
                             expect(value).to.eql("second value");
                             done();
