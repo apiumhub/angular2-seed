@@ -266,10 +266,11 @@ describe("first test", () => {
         });
         var doNotRunOnNode = function (done: ()=>void) {
             if (typeof(WebSocket) == "undefined") done();
+            return false;
         };
         describe("slow integration test: connected to websocket", ()=> {
             it("should generate a stream", (done) => {
-                doNotRunOnNode(done);
+                if (!doNotRunOnNode(done)) return;
                 const websocket = new WebSocketSubject<string>("ws://echo.websocket.org/");
                 websocket.asObservable().first().subscribe((value: any)=> {
                     console.log(value);
@@ -303,14 +304,29 @@ describe("first test", () => {
                             });
                         }
 
-                    };
+                    }
+                    ;
 
                     const instance = new AClass();
-                    instance.subscribe((value:string)=>{
+                    instance.subscribe((value: string)=> {
                         console.log(value);
                         done();
                     })
                     instance.aMethod("aValue");
+                });
+            });
+        });
+        describe("BehaviourSubject", ()=> {
+            describe("called map", ()=> {
+                it("it should mantain the new state", (done) => {
+                    const subj = new BehaviorSubject<string>("first value");
+                    subj.scan((value: string, newValue: string)=>newValue, "zero value")
+                        .skip(1)
+                        .subscribe((value: string)=> {
+                            expect(value).to.eql("second value");
+                            done();
+                        });
+                    subj.next("second value");
                 });
             });
         });
