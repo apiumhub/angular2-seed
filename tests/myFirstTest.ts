@@ -362,6 +362,21 @@ describe("first test", () => {
                 newValue=(newValue:string)=>this.newValues.next((oldObject:AnObject)=>oldObject.changeValue(newValue))
                 asObservable=()=>this.valueChanged
             }
+            class AStillMorePurelyFunctionalService {
+                private valueChanged: Observable<AnObject>;
+                newValue: (newValue: string)=>void;
+
+                constructor() {
+                    this.valueChanged = Observable.create((observer: Observer<Function>)=> {
+                        this.newValue = (newValue: string)=>observer.next((oldObject: AnObject)=>oldObject.changeValue(newValue))
+                        return observer;
+
+                    }).scan((oldObject: AnObject, invocation: Function)=>invocation(oldObject)
+                        , new AnObject("hey"));
+                }
+                asObservable = ()=>this.valueChanged
+            }
+
             describe("a purely functional service implementation", ()=>{
             	it("should work", (done) =>{
                     const service = new AVeryPurelyFunctionalService();
