@@ -316,12 +316,25 @@ describe("first test", () => {
                 });
             });
         });
-        describe("BehaviourSubject", ()=> {
-            describe("called map", ()=> {
+        describe("scan", ()=> {
+            describe("BehaviorSubject", ()=> {
                 it("it should mantain the new state", (done) => {
                     const subj = new BehaviorSubject<string>("first value");
-                    subj.skip(1)
-                        .scan((value: string, newValue: string)=>newValue, "zero value")
+                    subj
+                        .skip(1)
+                        .scan((oldValue: string, newValue: string)=>oldValue + " and " + newValue, "zero value")
+                        .subscribe((value: string)=> {
+                            expect(value).to.eql("zero value and second value");
+                            done();
+                        });
+                    subj.next("second value");
+                });
+            });
+            describe("Subject", ()=> {
+                it("it should mantain the new state", (done) => {
+                    const subj = new Subject<string>();
+                    subj
+                        .scan((value: string, newValue: string)=>newValue, "initial state")
                         .subscribe((value: string)=> {
                             expect(value).to.eql("second value");
                             done();
