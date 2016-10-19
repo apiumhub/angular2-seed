@@ -342,6 +342,37 @@ describe("first test", () => {
                     subj.next("second value");
                 });
             });
+            class AnObject
+            {
+                constructor(private aValue:string){}
+                changeValue=(newValue:string)=>new AnObject(newValue);
+                toString=()=>this.aValue
+            }
+            class AVeryPurelyFunctionalService
+            {
+                private newValues:Subject<Function>;
+                private valueChanged:Observable<AnObject>;
+                constructor()
+                {
+                    this.newValues=new Subject<Function>();
+                    this.valueChanged=this.newValues
+                        .scan((oldObject:AnObject, invocation:Function)=>invocation(oldObject)
+                        , new AnObject("hey"));
+                }
+                newValue=(newValue:string)=>this.newValues.next((oldObject:AnObject)=>oldObject.changeValue(newValue))
+                asObservable=()=>this.valueChanged
+            }
+            describe("a purely functional service implementation", ()=>{
+            	it("should work", (done) =>{
+                    const service = new AVeryPurelyFunctionalService();
+                    service.asObservable().subscribe(
+                        (value:AnObject)=>{
+                            expect(value.toString()).to.eql("newValue")
+                            done();
+                        })
+                    service.newValue("newValue")
+            	});
+            });
         });
     });
 });
