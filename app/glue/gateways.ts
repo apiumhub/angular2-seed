@@ -13,8 +13,8 @@ import axios from "axios";
 
 //region: using type merging:
 export interface Server {
-    get<T>(resource: string, observer?: Observer<T>): Observable<T>;
-    post<T>(resource: string, payload: T, observer?: Observer<T>): Observable<T>;
+    get<T,V>(resource: string, observer?: Observer<T>): Observable<V>;
+    post<T,V>(resource: string, payload: T, observer?: Observer<T>): Observable<V>;
 }
 ;
 export abstract class Server {

@@ -66,7 +66,7 @@ export class HeroService implements IHeroService{
     }
 
     loadHeroes():Observable<Hero[]> {
-        return this.getServer().get('/heroes', this.heroesRefreshed);
+        return this.getServer().get<Hero[], Hero[]>('/heroes', this.heroesRefreshed);
     }
 
     continuouslyLoadHeroes():void {
