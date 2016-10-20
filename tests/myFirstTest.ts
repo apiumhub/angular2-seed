@@ -346,7 +346,7 @@ describe("first test", () => {
                 constructor(private aValue: string) {
                 }
 
-                changeValue = (newValue: string)=>new AnObject(newValue);
+                changeValue = (_: string)=>new AnObject(_);
                 toString = ()=>this.aValue
             }
             type changeAnObject=(value: AnObject)=>AnObject;
@@ -361,8 +361,8 @@ describe("first test", () => {
                             , new AnObject("hey"));
                 }
 
-                private send: (invocation: changeAnObject)=>void = (value)=>this.newValues.next(value);
-                newValue = (newValue: string)=>this.send((oldObject: AnObject)=>oldObject.changeValue(newValue))
+                private send: (invocation: changeAnObject)=>void=_=>this.newValues.next(_);
+                newValue = (newValue: string)=>this.send(_=>_.changeValue(newValue))
                 asObservable = ()=>this.valueChanged
             }
             class AStillMorePurelyFunctionalService {
