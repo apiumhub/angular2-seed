@@ -342,25 +342,28 @@ describe("first test", () => {
                     subj.next("second value");
                 });
             });
-            class AnObject
-            {
-                constructor(private aValue:string){}
-                changeValue=(newValue:string)=>new AnObject(newValue);
-                toString=()=>this.aValue
-            }
-            class AVeryPurelyFunctionalService
-            {
-                private newValues:Subject<Function>;
-                private valueChanged:Observable<AnObject>;
-                constructor()
-                {
-                    this.newValues=new Subject<Function>();
-                    this.valueChanged=this.newValues
-                        .scan((oldObject:AnObject, invocation:Function)=>invocation(oldObject)
-                        , new AnObject("hey"));
+            class AnObject {
+                constructor(private aValue: string) {
                 }
-                newValue=(newValue:string)=>this.newValues.next((oldObject:AnObject)=>oldObject.changeValue(newValue))
-                asObservable=()=>this.valueChanged
+
+                changeValue = (newValue: string)=>new AnObject(newValue);
+                toString = ()=>this.aValue
+            }
+            type changeAnObject=(value: AnObject)=>AnObject;
+            class APurelyFunctionalService {
+                private newValues: Subject<changeAnObject>;
+                private valueChanged: Observable<AnObject>;
+
+                constructor() {
+                    this.newValues = new Subject<changeAnObject>();
+                    this.valueChanged = this.newValues
+                        .scan((oldObject: AnObject, invocation: changeAnObject)=>invocation(oldObject)
+                            , new AnObject("hey"));
+                }
+
+                private send: (invocation: changeAnObject)=>void = (value)=>this.newValues.next(value);
+                newValue = (newValue: string)=>this.send((oldObject: AnObject)=>oldObject.changeValue(newValue))
+                asObservable = ()=>this.valueChanged
             }
             class AStillMorePurelyFunctionalService {
                 private valueChanged: Observable<AnObject>;
@@ -374,19 +377,20 @@ describe("first test", () => {
                     }).scan((oldObject: AnObject, invocation: Function)=>invocation(oldObject)
                         , new AnObject("hey"));
                 }
+
                 asObservable = ()=>this.valueChanged
             }
 
-            describe("a purely functional service implementation", ()=>{
-            	it("should work", (done) =>{
-                    const service = new AVeryPurelyFunctionalService();
+            describe("a purely functional service implementation", ()=> {
+                it("should work", (done) => {
+                    const service = new APurelyFunctionalService();
                     service.asObservable().subscribe(
-                        (value:AnObject)=>{
+                        (value: AnObject)=> {
                             expect(value.toString()).to.eql("newValue")
                             done();
                         })
                     service.newValue("newValue")
-            	});
+                });
             });
         });
     });
