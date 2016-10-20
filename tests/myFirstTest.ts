@@ -343,9 +343,7 @@ describe("first test", () => {
                 });
             });
             class AnObject {
-                constructor(private aValue: string) {
-                }
-
+                constructor(private aValue: string) {}
                 changeValue = (_: string)=>new AnObject(_);
                 toString = ()=>this.aValue
             }
@@ -377,7 +375,6 @@ describe("first test", () => {
                     }).scan((oldObject: AnObject, invocation: Function)=>invocation(oldObject)
                         , new AnObject("hey"));
                 }
-
                 asObservable = ()=>this.valueChanged
             }
 
