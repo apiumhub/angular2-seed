@@ -371,7 +371,7 @@ describe("first test", () => {
 
                 constructor() {
                     this.valueChanged = Observable.create((observer: Observer<Function>)=> {
-                        this.newValue = (newValue: string)=>observer.next((oldObject: AnObject)=>oldObject.changeValue(newValue))
+                        this.newValue = _=>observer.next((oldObject: AnObject)=>oldObject.changeValue(_))
                         return observer;
 
                     }).scan((oldObject: AnObject, invocation: Function)=>invocation(oldObject)
