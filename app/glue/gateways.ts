@@ -81,46 +81,46 @@ export class AxiosGateway implements Server {
     }
 }
 export interface IPipeline<T,V> {
-  run(resource:T):void;
-  next(resource:T):void;
-  subscribe(cb:((value:V) => void)):Subscription;
-  asObservable():Observable<V>;
+    run(resource: T): void;
+    next(resource: T): void;
+    subscribe(cb: ((value: V) => void)): Subscription;
+    asObservable(): Observable<V>;
 }
 export interface IResourcePipeline<T, V> extends IPipeline<T,V> {
 }
 export class OnlyLatestFilteredCallGeneric<T, V> implements IResourcePipeline<T, V> {
 
-  private continuousLoadPipeline:Subject<T> = new Subject<T>();
-  private observable:ObservableInput<V>;
+    private continuousLoadPipeline: Subject<T> = new Subject<T>();
+    private observable: ObservableInput<V>;
 
-  constructor(call:(value:any, index:number) => ObservableInput<V>, observer?:Observer<V>) {
-    this.observable = this.continuousLoadPipeline
-      .switchMap(call);
-    if (observer) {
-      (<Observable<V>> this.observable).subscribe(observer); //TODO: leaking subscription
+    constructor(call: (value: any, index: number) => ObservableInput<V>, observer?: Observer<V>) {
+        this.observable = this.continuousLoadPipeline
+            .switchMap(call);
+        if (observer) {
+            (<Observable<V>> this.observable).subscribe(observer); //TODO: leaking subscription
+        }
     }
-  }
 
-  run(resource:T):IResourcePipeline<T, V> {
-    this.continuousLoadPipeline.next(resource);
-    return this;
-  }
+    run(resource: T): IResourcePipeline<T, V> {
+        this.continuousLoadPipeline.next(resource);
+        return this;
+    }
 
-  next(resource:T):void {
-    this.run(resource);
-  }
+    next(resource: T): void {
+        this.run(resource);
+    }
 
-  subscribe(cb:((value:V) => void)) {
-    const obs = <Observable<V>> this.observable;
-    return obs.subscribe(cb);
-  }
+    subscribe(cb: ((value: V) => void)) {
+        const obs = <Observable<V>> this.observable;
+        return obs.subscribe(cb);
+    }
 
-  asObservable():Observable<V> {
-    return <Observable<V>> this.observable;
-  }
+    asObservable(): Observable<V> {
+        return <Observable<V>> this.observable;
+    }
 }
-export class OnlyLatestFilteredCall<T> extends OnlyLatestFilteredCallGeneric<string, T>
-{}
+export class OnlyLatestFilteredCall<T> extends OnlyLatestFilteredCallGeneric<string, T> {
+}
 export class WebSocketSubject<T> {
 
     private websocket: WebSocket;
@@ -145,7 +145,7 @@ export class WebSocketSubject<T> {
             console.log("websocket to [", url, "] opened!");
             this.open = true;
             this.toBeSent.map((cb: ()=>string)=>this.websocket.send(cb()));
-            this.toBeSent=[];
+            this.toBeSent = [];
         }
     }
 
@@ -174,3 +174,32 @@ export class WebSocketSubject<T> {
         return <Observable<T>>this.obs;
     }
 }
+export class StatefulPipeline<T, V> {
+    private observable: ObservableInput<V>;
+    private continuousLoadPipeline: Subject<(value: T)=>T> = new Subject<(value: T)=>T>();
+
+    asObservable(): Observable<V> {
+        return <Observable<V>> this.observable;
+    }
+
+    constructor(call: (value: any, index: number) => ObservableInput<V>, initialValue: T) {
+        this.observable = this.continuousLoadPipeline
+            .scan((oldValue: T, fn: (value: T)=>T)=>fn(oldValue), initialValue)
+            .switchMap(call);
+    }
+
+    run(resource: (value: T)=>T): void {
+        this.continuousLoadPipeline.next(resource);
+    }
+
+    next(resource: (value: T)=>T): void {
+        this.run(resource);
+    }
+
+    subscribe(cb: ((value: V) => void)) {
+        const obs = <Observable<V>> this.observable;
+        return obs.subscribe(cb);
+    }
+
+}
+
