@@ -80,48 +80,48 @@ export class AxiosGateway implements Server {
         return this.manageResponse(this.request<T>(resource, 'post', payload), resource, observer);
     }
 }
-export interface IObservablePipeline<T,V> {
-    subscribe(cb: ((value: T) => void)): Subscription;
-    asObservable(): Observable<T>;
+export interface IPipeline<T,V> {
+  run(resource:T):void;
+  next(resource:T):void;
+  subscribe(cb:((value:V) => void)):Subscription;
+  asObservable():Observable<V>;
 }
-export interface IObserverPipeline<T,V> {
-    run(resource: V): void;
-    next(resource: V): void;
+export interface IResourcePipeline<T, V> extends IPipeline<T,V> {
 }
-export interface IResourcePipeline<T> extends IObservablePipeline<T,string>, IObserverPipeline<T,string> {
+export class OnlyLatestFilteredCallGeneric<T, V> implements IResourcePipeline<T, V> {
+
+  private continuousLoadPipeline:Subject<T> = new Subject<T>();
+  private observable:ObservableInput<V>;
+
+  constructor(call:(value:any, index:number) => ObservableInput<V>, observer?:Observer<V>) {
+    this.observable = this.continuousLoadPipeline
+      .switchMap(call);
+    if (observer) {
+      (<Observable<V>> this.observable).subscribe(observer); //TODO: leaking subscription
+    }
+  }
+
+  run(resource:T):IResourcePipeline<T, V> {
+    this.continuousLoadPipeline.next(resource);
+    return this;
+  }
+
+  next(resource:T):void {
+    this.run(resource);
+  }
+
+  subscribe(cb:((value:V) => void)) {
+    const obs = <Observable<V>> this.observable;
+    return obs.subscribe(cb);
+  }
+
+  asObservable():Observable<V> {
+    return <Observable<V>> this.observable;
+  }
 }
-export class OnlyLatestFilteredCall<T> implements IResourcePipeline<T> {
-    private continuousLoadPipeline: Subject<string> = new Subject<string>();
-    private observable: ObservableInput<T>;
-
-    constructor(call: (value: string, index: number) => ObservableInput<T>, observer?: Observer<T>) {
-        this.observable = this.continuousLoadPipeline
-            .switchMap(call);
-        if (observer) {
-            let obs = <Observable<T>> this.observable;
-            obs.subscribe(observer); //TODO: leaking subscription
-        }
-    }
-
-    run(resource: string) {
-        this.continuousLoadPipeline.next(resource);
-    }
-
-    next(resource: string): void {
-        this.run(resource);
-    }
-
-    subscribe(cb: ((value: T) => void)) {
-        const obs = <Observable<T>> this.observable;
-        return obs.subscribe(cb);
-    }
-
-    asObservable(): Observable<T> {
-        return <Observable<T>> <any> this;
-    }
-}
-
-export class WebSocketSubject<T> implements IResourcePipeline<T> {
+export class OnlyLatestFilteredCall<T> extends OnlyLatestFilteredCallGeneric<string, T>
+{}
+export class WebSocketSubject<T> {
 
     private websocket: WebSocket;
     private obs: Observable<{}>;
