@@ -31,7 +31,7 @@ export class AxiosGateway implements Server {
     }
 
 
-    private request<T>(resource: string, method: string, data: T|null = null, headers: any = {'X-Custom-Header': 'foobar'}): [Observable<T>,any] {
+    private request<T, V>(resource: string, method: string, data: T|null = null, headers: any = {'X-Custom-Header': 'foobar'}): [Observable<V>,any] {
         var config: any = {
             baseURL: this.serverHost,
             timeout: 1000,
@@ -51,12 +51,12 @@ export class AxiosGateway implements Server {
             .map((resp: any) => resp.data), promise];
     }
 
-    private manageResponse<T>(tuple: [Observable<T>, any], resource: string, observer: Observer<T>|null): Observable<T> {
-        const observable: Observable<T> = tuple[0];
+    private manageResponse<T,V>(tuple: [Observable<V>, any], resource: string, observer: Observer<V>|null): Observable<V> {
+        const observable: Observable<V> = tuple[0];
         const promise = tuple[1];
         if (observer) {
             observable.first().subscribe(
-                (value: T)=> {
+                (value: V)=> {
                     observer.next(value);
                 },
                 (error: any) => {
@@ -71,13 +71,13 @@ export class AxiosGateway implements Server {
         return observable;
     }
 
-    get<T>(resource: string, observer: Observer<T>|null = null): Observable<T> {
-        return this.manageResponse(this.request<T>(resource, 'get'), resource, observer);
+    get<T,V>(resource: string, observer: Observer<V>|null = null): Observable<V> {
+        return this.manageResponse(this.request<T, V>(resource, 'get'), resource, observer);
     }
 
 
-    post<T>(resource: string, payload: T, observer: Observer<T>|null = null): Observable<T> {
-        return this.manageResponse(this.request<T>(resource, 'post', payload), resource, observer);
+    post<T,V>(resource: string, payload: T, observer: Observer<V>|null = null): Observable<V> {
+        return this.manageResponse(this.request<T, V>(resource, 'post', payload), resource, observer);
     }
 }
 export interface IPipeline<T,V> {
