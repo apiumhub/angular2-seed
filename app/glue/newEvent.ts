@@ -8,6 +8,6 @@ export function newEvent<T>(observable: Observable<T>, name:string="event name n
             return okFunction(value);
         }, (error:any) => {
             console.error("arrived error in event named: [",name,"] value: [", error, "]")
-            return errorFunction(error);
+            if (errorFunction) return errorFunction(error);
         }, completeFunction);
 }

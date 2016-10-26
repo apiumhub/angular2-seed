@@ -95,7 +95,7 @@ export class OnlyLatestFilteredCallGeneric<T, V> implements IResourcePipeline<T,
 
     constructor(call: (value: any, index: number) => ObservableInput<V>, observer?: Observer<V>) {
         this.observable = this.continuousLoadPipeline
-            .switchMap(call);
+            .switchMap(call).share();
         if (observer) {
             (<Observable<V>> this.observable).subscribe(observer); //TODO: leaking subscription
         }
