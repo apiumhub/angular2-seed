@@ -8,6 +8,18 @@ import SinonSpy = Sinon.SinonSpy;
 
 
 describe("AxiosGateway slow integration tests", ()=>{
+	describe("one call", ()=>{
+		it("it should send its response", (done) =>{
+			const subj=new Subject<Hero[]>();
+			const server = new AxiosGateway();
+			server.get("/heroes", subj);
+			subj.subscribe(function(value)
+			{
+				expect(value).to.be.not.null;
+				done();
+			})
+		});
+	});
 	describe("two call", ()=>{
 		it("each call sends its response", (done)=>{
 			let counter=0;
