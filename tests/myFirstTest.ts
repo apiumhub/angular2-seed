@@ -111,6 +111,21 @@ describe("first test", () => {
     })
 
     describe("typescript", () => {
+        describe("assignment", ()=>{
+        	it("returns the value", (done) =>{
+                class TestAssignment
+                {
+                    constructor(private someProp:number){}
+                    assign(value:number):number {
+                        return this.someProp = value;
+                    }
+                }
+                const sut = new TestAssignment(1);
+                var res=sut.assign(3);
+                expect(res).to.eql(3)
+        		done();
+        	});
+        });
         describe("mixins", () => {
             it("should work", function (done) {
                 class Trait1 {
