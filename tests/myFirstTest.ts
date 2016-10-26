@@ -111,20 +111,21 @@ describe("first test", () => {
     })
 
     describe("typescript", () => {
-        describe("assignment", ()=>{
-        	it("returns the value", (done) =>{
-                class TestAssignment
-                {
-                    constructor(private someProp:number){}
-                    assign(value:number):number {
+        describe("assignment", ()=> {
+            it("returns the value", (done) => {
+                class TestAssignment {
+                    constructor(private someProp: number) {
+                    }
+
+                    assign(value: number): number {
                         return this.someProp = value;
                     }
                 }
                 const sut = new TestAssignment(1);
-                var res=sut.assign(3);
+                var res = sut.assign(3);
                 expect(res).to.eql(3)
-        		done();
-        	});
+                done();
+            });
         });
         describe("mixins", () => {
             it("should work", function (done) {
@@ -358,7 +359,9 @@ describe("first test", () => {
                 });
             });
             class AnObject {
-                constructor(private aValue: string) {}
+                constructor(private aValue: string) {
+                }
+
                 changeValue = (_: string)=>new AnObject(_);
                 toString = ()=>this.aValue
             }
@@ -374,7 +377,7 @@ describe("first test", () => {
                             , new AnObject("hey"));
                 }
 
-                private send: (invocation: changeAnObject)=>void=_=>this.newValues.next(_);
+                private send: (invocation: changeAnObject)=>void = _=>this.newValues.next(_);
                 newValue = (newValue: string)=>this.send(_=>_.changeValue(newValue))
                 asObservable = ()=>this.valueChanged
             }
@@ -390,6 +393,7 @@ describe("first test", () => {
                     }).scan((oldObject: AnObject, invocation: Function)=>invocation(oldObject)
                         , new AnObject("hey"));
                 }
+
                 asObservable = ()=>this.valueChanged
             }
 
@@ -402,6 +406,47 @@ describe("first test", () => {
                             done();
                         })
                     service.newValue("newValue")
+                });
+            });
+
+            describe("shared mutable state", ()=> {
+                // Observable.prototype.scanWithReset = function ($reset, accum, seed) {
+                //     var source = this;
+                //     //Creates a new Observable
+                //     return Observable.create(function (observer) {
+                //         //We will be reusing this source so we want to make sure it is shared
+                //         var p = source.publish();
+                //
+                //
+                //         var r = $reset
+                //             //Make sure the seed is added first
+                //             .startWith(seed)
+                //             //This will switch to a new sequence with the associated value
+                //             //every time $reset fires
+                //             .flatMapLatest(function (resetValue:any) {
+                //               //Perform the scan with the latest value
+                //               return p.scan(accum, resetValue);
+                //         });
+                //
+                //         //Make sure every thing gets cleaned up
+                //         return new CompositeDisposable(
+                //             r.subscribe(observer),
+                //             //We are ready to start receiving from our source
+                //             p.connect());
+                //     });
+                // }
+                xdescribe("modelled with immutability - pending to try the scan-resettable observable", ()=> {
+                    it("should be the same", (done) => {
+                        const subj = new Subject<string>();
+                        const state=subj
+                            .scan((value: string, newValue: string)=>newValue)
+                        state
+                            .elementAt(0).subscribe((value: string)=> {
+                                expect(value).to.eql("second value");
+                                done();
+                            });
+                        subj.next("second value");
+                    });
                 });
             });
         });
