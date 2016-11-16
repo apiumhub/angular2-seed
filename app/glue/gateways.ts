@@ -31,7 +31,7 @@ export class AxiosGateway implements Server {
     }
 
 
-    private request<T, V>(resource:string, method:string, data:T|null = null, headers:any = {'X-Custom-Header': 'foobar'}):[Observable<V>,any] {
+    private request<T, V>(resource:string, method:string, data:T|null = null, headers:any = {'X-Custom-Header': 'foobar'}):Observable<V> {
         var config:any = {
             baseURL: this.serverHost,
             timeout: 1000,
@@ -77,7 +77,7 @@ export class AxiosGateway implements Server {
         return this.manageResponse(this.request<T, V>(resource, 'post', payload), resource, observer);
     }
 }
-export interface IPipeline<T,V> extends Subscribable<T> {
+export interface IPipeline<T,V> {
     run(resource:T):void;
     next(resource:T):void;
     subscribe(cb:((value:V) => void)):Subscription;
@@ -171,7 +171,7 @@ export class WebSocketSubject<T> {
         return <Observable<T>>this.obs;
     }
 }
-export class StatefulPipeline<T, V> implements Subscribable<T> {
+export class StatefulPipeline<T, V> {
     private observable:ObservableInput<V>;
     private continuousLoadPipeline:Subject<(value:T)=>T> = new Subject<(value:T)=>T>();
 
