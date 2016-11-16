@@ -43,7 +43,8 @@ export class AxiosGateway implements Server {
         console.log("calling resource [", resource, "] of server: [", this.serverHost, "]");
         const promise = axios.request(config);
         return [Observable
-            .fromPromise(promise)
+            .of(config)
+            .flatMap(x => Observable.fromPromise(promise))
             .retry(3)
             .do((resp: any) => {
                 console.log("returned from call for resource: ", resource, JSON.stringify(resp.data));
