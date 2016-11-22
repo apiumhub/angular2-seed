@@ -3,11 +3,7 @@
  */
 import {Injectable} from "@angular/core";
 import {Observable, Subject, Subscription} from "rxjs/Rx";
-import {ObservableInput, Subscribable} from "rxjs/Observable";
-import "rxjs/add/observable/dom/ajax";
-import "rxjs/add/observable/fromPromise";
-import "rxjs/add/observable/defer";
-import "rxjs/add/operator/retry";
+import {ObservableInput} from "rxjs/Observable";
 import {Observer} from "rxjs/Observer";
 import axios from "axios";
 
