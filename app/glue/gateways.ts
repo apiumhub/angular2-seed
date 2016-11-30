@@ -37,11 +37,11 @@ export class AxiosGateway implements Server {
             data: data
         };
         console.log("calling resource [", resource, "] of server: [", this.serverHost, "]");
-        return Observable
+        return <Observable<V>> Observable
             .of(config)
             .flatMap(config => axios.request(config))
             .retry(3)
-            .map((resp:any) => resp.data)
+            .pluck('data')
             .do((resp:any) => {
                 console.log("returned from call for resource: ", resource, JSON.stringify(resp));
             });
